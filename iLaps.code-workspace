@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"csharpfixformat.style.spaces.beforeParenthesis": false,
+	},
+	"extensions": {
+		"recommendations": [
+            "yzane.markdown-pdf",
+            "yzhang.markdown-all-in-one",
+            "ms-dotnettools.csharp",
+            "leopotam.csharpfixformat",
+            "msjsdiag.debugger-for-chrome",
+            "davidanson.vscode-markdownlint",
+			"ms-vscode.powershell",
+			"fudge.auto-using"
+		]
+	}
+}

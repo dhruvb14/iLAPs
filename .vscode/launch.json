@@ -1,0 +1,94 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "PS: Build Production Script",
+            "type": "PowerShell",
+            "request": "launch",
+            "args": [],
+            "script": ".\\Build.ps1",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "PS: Build Development Script",
+            "type": "PowerShell",
+            "request": "launch",
+            "args": [
+                "-BuildEnvironment 'Development'"
+            ],
+            "script": ".\\Build.ps1",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "PS: Read Admin Passwords",
+            "type": "PowerShell",
+            "request": "launch",
+            "args": [],
+            "script": ".\\Output\\Get-LocalAdministratorPassword.ps1",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "PS: Reset Admin Passwords",
+            "type": "PowerShell",
+            "request": "launch",
+            "args": [],
+            "script": ".\\Output\\Reset-LocalAdministratorPassword.ps1",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "PS: Check Reset Admin Passwords",
+            "type": "PowerShell",
+            "request": "launch",
+            "args": [],
+            "script": ".\\Output\\Check-Reset-LocalAdministratorPassword.ps1",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "iLAPs Admin (Production Secrets)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-production-secrets-ps",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/IntuneLAPsAdmin/IntuneLAPsAdmin/bin/Debug/netcoreapp3.1/IntuneLAPsAdmin.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/IntuneLAPsAdmin/IntuneLAPsAdmin",
+            "stopAtEntry": false,
+            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/IntuneLAPsAdmin/Views"
+            }
+        },
+        {
+            "name": "iLAPs Admin (Development Secrets)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-development-secrets-ps",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/IntuneLAPsAdmin/IntuneLAPsAdmin/bin/Debug/netcoreapp3.1/IntuneLAPsAdmin.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/IntuneLAPsAdmin/IntuneLAPsAdmin",
+            "stopAtEntry": false,
+            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/IntuneLAPsAdmin/Views"
+            }
+        },
+    ]
+}

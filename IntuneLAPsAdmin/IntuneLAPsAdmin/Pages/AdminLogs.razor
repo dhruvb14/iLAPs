@@ -1,0 +1,68 @@
+﻿@page "/ViewAdminLogs"
+@attribute [Authorize(Roles = "SuperUser")]
+@inherits AdminLogsClass
+
+@using IntuneLAPsAdmin.Models;
+
+<h1>Authorized Use Only (View Logs)</h1>
+<div class="row">
+    <div class="col">
+        <div class="ml-auto">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" placeholder="Machine Name (Prefix1234567)" Id="SearchCriteriaMachine" @bind-value:event="oninput" @onkeyup="OnEnter" @bind-value="@HostnameFilter" class="form-control search">
+                    <div class="input-group-append">
+                        <span class="input-group-text" @onclick="OnSearchCriteria"><span class="oi oi-magnifying-glass"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="ml-auto">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" placeholder="Username (person@company.com)" Id="SearchCriteriaAccount" @bind-value:event="oninput" @onkeyup="OnEnter" @bind-value="@Username" class="form-control search">
+                    <div class="input-group-append">
+                        <span class="input-group-text" @onclick="OnSearchCriteria"><span class="oi oi-magnifying-glass"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@if (!ShowResults)
+{
+    <p><em>No Logs Matching Criteria</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Hostname</th>
+                <th>Action</th>
+                <th>ActionTime</th>
+                <th>Query</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            @foreach (Log record in results.value)
+            {
+                <tr>
+                    <td>@record.Username</td>
+                    <td>@record.Hostname</td>
+                    <td>@record.Action</td>
+                    <td>@record.ActionTime.ToLocalTime()</td>
+                    <td>@record.Query</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

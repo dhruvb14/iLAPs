@@ -1,0 +1,46 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">iLAPsAdmin</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3" Match="NavLinkMatch.All">
+            <NavLink class="nav-link" href="viewpasswords" Match="NavLinkMatch.All">
+                <span class="oi oi-key" aria-hidden="true"></span> Passwords
+            </NavLink>
+        </li>
+        <AuthorizeView Roles="SuperUser">
+            <li class="nav-item px-3" >
+                <NavLink class="nav-link" href="AdminViewPasswords" Match="NavLinkMatch.All">
+                    <span class="oi oi-key" aria-hidden="true"></span>Passwords (No Reset)
+                </NavLink>
+            </li>
+        </AuthorizeView>
+        <AuthorizeView Roles="SuperUser">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="ViewAdminLogs" Match="NavLinkMatch.All">
+                    <span class="oi oi-clock" aria-hidden="true"></span>Logs
+                </NavLink>
+            </li>
+        </AuthorizeView>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

@@ -1,0 +1,35 @@
+﻿@inject IntuneLAPsAdmin.Services.AuthService  authService
+@*@inject IHttpContextAccessor  httpContextAccessor*@
+
+@if (!LoggingIn)
+{
+    @if (!response.HasValue)
+    {
+        <Error></Error>
+    }
+    else if (!authService.IsLoggedIn)
+    {
+        <p class="overlay">You do not have access to the system. Please contact an administrator to create your account.</p>
+    }
+    else
+    {
+        @ChildContent
+    }
+}
+
+
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public bool LoggingIn = false;
+    public bool? response = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var myGroups = await authService.GetGroups();
+        var a = "B";
+    }
+}

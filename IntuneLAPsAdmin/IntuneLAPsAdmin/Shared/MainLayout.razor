@@ -1,9 +1,9 @@
 ﻿@inherits LayoutComponentBase
 @using Sotsera.Blazor.Toaster
-<ToastContainer />
+
 <AuthorizeView>
     <Authorized>
-        <ClientAuth>
+            <ToastContainer />
             <div class="sidebar">
                 <NavMenu />
             </div>
@@ -17,7 +17,6 @@
                     @Body
                 </div>
             </div>
-        </ClientAuth>
     </Authorized>
     <NotAuthorized>
         <p>Not Authorized</p>

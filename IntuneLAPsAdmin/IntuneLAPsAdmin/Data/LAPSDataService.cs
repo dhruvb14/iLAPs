@@ -160,6 +160,44 @@ namespace IntuneLAPsAdmin.Data
                 options.RequireInteraction = true;
             });
         }
+        public async Task<DEMPasswords> GetDemPasswordsAsync()
+        {
+            var Url = "?$top=100";
+            //log.UpdateAccessLogs(LoggingAction.SearchForMachine, LogMessage, HostNameFilter);
+            var results = await http.GetDEMJsonAsync<DEMPasswords>(Url);
+            if (results.value.Count() == 0)
+            {
+                _toaster.Error($"There was an error getting DEM Passwords");
+            }
 
+            while (!string.IsNullOrEmpty(results.NextPartitionKey) && !string.IsNullOrEmpty(results.NextRowKey))
+            {
+                results = await GetAdditionalDEMResultsAsync(results);
+            }
+            return results;
+        }
+        public async Task<DEMPasswords> GetAdditionalDEMResultsAsync(DEMPasswords currentViewModel)
+        {
+            var Url = "?$top=100";
+            Url += $"&NextPartitionKey={currentViewModel.NextPartitionKey}&NextRowKey={currentViewModel.NextRowKey}";
+            var results = await http.GetDEMJsonAsync<DEMPasswords>(Url);
+            if (results.value.Count() != 0)
+            {
+                foreach (var result in results.value)
+                {
+                    currentViewModel.value.Add(result);
+                }
+            }
+            // Add back any additional paging information to original viewmodel
+            currentViewModel.NextPartitionKey = results.NextPartitionKey;
+            currentViewModel.NextRowKey = results.NextRowKey;
+            return currentViewModel;
+        }
+        public DEMPasswordResults DecryptDEMPasswordNoReset(DEMPasswordResults currentViewModel)
+        {
+            currentViewModel.DecryptedPassword = helper.GetDecryptString(currentViewModel.Password, _settings.Value.SecretKey);
+            log.UpdateAccessLogs(LoggingAction.ViewDEMPassword, $"{currentViewModel.AccountEmailAddress}'s Password decrypted");
+            return currentViewModel;
+        }
     }
 }

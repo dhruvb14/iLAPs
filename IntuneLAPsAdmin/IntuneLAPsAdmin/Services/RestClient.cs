@@ -38,6 +38,10 @@ namespace IntuneLAPsAdmin.Services
         {
             return await SendAsync<T>(HttpMethod.Get, url, _settings.Value.AzureTable, null, supressToast);
         }
+        public async Task<T> GetDEMJsonAsync<T>(string url, bool supressToast = false)
+        {
+            return await SendAsync<T>(HttpMethod.Get, url, _settings.Value.DEMPasswordTable, null, supressToast);
+        }
         public async Task<T> GetResetJsonAsync<T>(string url, bool supressToast = false)
         {
             return await SendAsync<T>(HttpMethod.Get, url, _settings.Value.PasswordResetTable, null, supressToast);

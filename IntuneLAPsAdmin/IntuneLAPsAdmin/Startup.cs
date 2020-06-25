@@ -125,8 +125,8 @@ namespace IntuneLAPsAdmin
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
             }).AddMicrosoftIdentityUI();
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-            var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings")); 
+             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
 
             services.AddHttpClient<RestClient>("iLAPs-Client", client =>
             {
@@ -145,12 +145,9 @@ namespace IntuneLAPsAdmin
             services.AddScoped<IRestClient, RestClient>();
             services.AddScoped<ILoggerDataService, LoggerDataService>();
             services.AddScoped<ILAPSDataService, LAPSDataService>();
-            //services.AddScoped<IOptions<WebOptions>>();
-            //services.AddScoped<ITokenAcquisition>(); 
-            services.AddScoped<AuthService>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            //services.AddSingleton<iLAPSDataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

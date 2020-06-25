@@ -340,3 +340,4 @@ ASALocalRun/
 *.local.json
 
 /Output/*
+/IntuneLAPsAdmin/Output/Admin

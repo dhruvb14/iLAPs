@@ -21,14 +21,16 @@ namespace IntuneLAPsAdmin.Services
         readonly IOptions<AppSettings> _settings;
         public bool IsLoggedIn { get; set; } = true;
         List<Group> CurrentGroupsFromGraph { get; set; } = new List<Group>();
-        string[] demGroups { get; set; }
         public AuthService(ITokenAcquisition tokenAcquisition,
                               IOptions<WebOptions> webOptionValue, IOptions<AppSettings> settings)
         {
             this.tokenAcquisition = tokenAcquisition;
             this.webOptions = webOptionValue.Value;
             this._settings = settings;
-            demGroups = JsonConvert.DeserializeObject<string[]>(_settings.Value.DEMAdminGroups);
+        }
+        private string[] GetDemGroups()
+        {
+            return JsonConvert.DeserializeObject<string[]>(_settings.Value.DEMAdminGroups);
         }
         public async Task<List<Group>> GetGroups()
         {
@@ -48,7 +50,7 @@ namespace IntuneLAPsAdmin.Services
         public async Task<bool> IsInDemGroupAsync()
         {
             var groups = await GetGroups();
-            return groups.Any(x => demGroups.Any(y => y == x.DisplayName));
+            return groups.Any(x => GetDemGroups().Any(y => y == x.DisplayName));
         }
         public bool IsInDemGroup(string SpecificGroup)
         {

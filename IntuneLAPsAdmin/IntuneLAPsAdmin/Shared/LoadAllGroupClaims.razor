@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Http
+@using IntuneLAPsAdmin.Interfaces;
+@inject IAuthService  authService
+@inject IHttpContextAccessor  httpContextAccessor
+
+@if (IsLoaded)
+{
+    if (GroupsLoaded)
+    {
+        @ChildContent
+    }
+}
+else
+{
+    <img class="center" src="/images/circle-loading-animation.gif" />
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public bool IsLoaded = false;
+    public bool GroupsLoaded = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        StateHasChanged();
+        var groups = await authService.GetGroups();
+        GroupsLoaded = true;
+        IsLoaded = true;
+    }
+}

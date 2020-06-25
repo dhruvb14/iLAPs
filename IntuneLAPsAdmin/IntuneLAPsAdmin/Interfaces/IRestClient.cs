@@ -6,6 +6,7 @@ namespace IntuneLAPsAdmin.Interfaces
     {
         string GetApiUrl();
         Task<T> GetAdminJsonAsync<T>(string url, bool suppressToast = false);
+        Task<T> GetDEMJsonAsync<T>(string url, bool supressToast = false);
         Task<T> GetLogJsonAsync<T>(string url, bool suppressToast = false);
         Task<T> GetResetJsonAsync<T>(string url, bool suppressToast = false);
         Task<T> PostJsonAsync<T>(string url, object item);

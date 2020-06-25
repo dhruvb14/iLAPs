@@ -15,6 +15,8 @@ namespace IntuneLAPsAdmin.Helpers
         [Inject]
         protected IRestClient RestClient { get; set; }
         [Inject]
+        protected IAuthService AuthService { get; set; }
+        [Inject]
         protected ILAPSDataService Service { get; set; }
         [Inject]
         protected ILoggerDataService Logs { get; set; }

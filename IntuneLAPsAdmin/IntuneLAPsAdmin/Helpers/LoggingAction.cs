@@ -12,5 +12,6 @@ namespace IntuneLAPsAdmin.Helpers
         public const string ResetPassword = "ResetPassword";
         public const string SearchForMachine = "SearchForMachine";
         public const string SearchForLogs = "SearchForLogs";
+        public const string ViewDEMPassword = "ViewDEMPassword";
     }
 }

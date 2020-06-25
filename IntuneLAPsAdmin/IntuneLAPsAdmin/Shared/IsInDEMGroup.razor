@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.Http
+@using IntuneLAPsAdmin.Interfaces;
+@inject IAuthService  authService
+@inject IHttpContextAccessor  httpContextAccessor
+
+@if (IsLoaded)
+{
+    @if (IsInDemGroup)
+    {
+        @ChildContent
+    }
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public bool IsInDemGroup = false;
+    public bool IsLoaded = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsInDemGroup = await authService.IsInDemGroupAsync();
+        IsLoaded = true;
+    }
+}

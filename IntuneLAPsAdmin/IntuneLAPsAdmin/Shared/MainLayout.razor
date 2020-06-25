@@ -1,17 +1,24 @@
 ﻿@inherits LayoutComponentBase
 @using Sotsera.Blazor.Toaster
-<ToastContainer />
 
-<div class="sidebar">
-    <NavMenu />
-</div>
+<AuthorizeView>
+    <Authorized>
+            <ToastContainer />
+            <div class="sidebar">
+                <NavMenu />
+            </div>
 
-<div class="main">
-    <div class="top-row px-4 auth">
-        <LoginDisplay />
-    </div>
+            <div class="main">
+                <div class="top-row px-4 auth">
+                    <LoginDisplay />
+                </div>
 
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+                <div class="content px-4">
+                    @Body
+                </div>
+            </div>
+    </Authorized>
+    <NotAuthorized>
+        <p>Not Authorized</p>
+    </NotAuthorized>
+</AuthorizeView>

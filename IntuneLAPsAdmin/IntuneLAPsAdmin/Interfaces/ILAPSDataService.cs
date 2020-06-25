@@ -9,5 +9,7 @@ namespace IntuneLAPsAdmin.Interfaces
         Task<AdminPasswords> GetAdditionalResultsAsync(string HostNameFilter, string AccountNameFilter, AdminPasswords currentViewModel);
         Task<AdminPasswordsResults> DecryptPassword(AdminPasswordsResults currentViewModel);
         AdminPasswordsResults DecryptPasswordNoReset(AdminPasswordsResults currentViewModel);
+        Task<DEMPasswords> GetDemPasswordsAsync();
+        DEMPasswordResults DecryptDEMPasswordNoReset(DEMPasswordResults currentViewModel);
     }
 }

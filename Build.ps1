@@ -26,7 +26,8 @@ Param
 (
     #Run Script In Development Mode
     [parameter(Mandatory = $false)][string]$BuildEnvironment = "Production",
-    [parameter(Mandatory = $false)][bool]$BuildAdminInterfaceOnly = $false
+    [parameter(Mandatory = $false)][bool]$BuildAdminInterfaceOnly = $false,
+    [parameter(Mandatory = $false)][bool]$BuildAppSettingsLocal = $true
 )
 
 <# Parameters - End #>
@@ -60,10 +61,11 @@ New-Item -Path 'Output' -ItemType Directory;
 Write-Log -Text "Copy Base Powershell scripts to Output Folder";
 Copy-Item "./Scripts/*" -Destination './Output';
 $installationFiles = Get-ChildItem ./Output * -rec
+
 $buildSettings = Get-Content -Path "./settings.$($BuildEnvironment.ToLower()).local.json" -Raw | ConvertFrom-JSON;
 foreach ($file in $installationFiles) {
     Write-Log -Text "Adding Build Secrets to file $file";
-
+    
     $Content = (Get-Content $file.PSPath -Raw);
     foreach ($item in $buildSettings.psobject.Members) {
         #If added to handle built in PSObject Method Exclusions
@@ -78,9 +80,12 @@ foreach ($file in $installationFiles) {
     Write-Log -Text "Save $file With Build Secrets";
     Set-Content $file.PSPath -Value $Content;
 }
-Write-Log -Text "Copy appsettings.Local.json to Admin Blazor Application";
-Remove-Item './IntuneLAPsAdmin/IntuneLAPsAdmin/appsettings.Local.json' -Force -ErrorAction Ignore;
-Copy-Item "./Output/admin-appsettings-local.json" -Destination './IntuneLAPsAdmin/IntuneLAPsAdmin/appsettings.Local.json';
+If ($BuildAppSettingsLocal) {
+    Write-Log -Text "Copy appsettings.Local.json to Admin Blazor Application";
+    Remove-Item './IntuneLAPsAdmin/IntuneLAPsAdmin/appsettings.Local.json' -Force -ErrorAction Ignore;
+    Copy-Item "./Output/admin-appsettings-local.json" -Destination './IntuneLAPsAdmin/IntuneLAPsAdmin/appsettings.Local.json';
+}
+
 
 If ($BuildAdminInterfaceOnly) {
     Write-Log -Text "Building Admin Blazor Application for Debugging in VSCode";

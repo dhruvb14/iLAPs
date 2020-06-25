@@ -58,13 +58,13 @@ namespace IntuneLAPsAdmin.Services
         public async Task<bool> IsInDemGroupAsync()
         {
             var groups = await GetGroups();
-            return groups.Any(x => GetDemGroups().Any(y => y == x.DisplayName));
+            return groups.Any(x => GetDemGroups().Any(y => y.ToUpper() == x.DisplayName.ToUpper()));
         }
         public bool IsInDemGroup(string SpecificGroup)
         {
             if (CurrentGroupsFromGraph.Count > 0)
             {
-                return CurrentGroupsFromGraph.Any(x => x.DisplayName == SpecificGroup);
+                return CurrentGroupsFromGraph.Any(x => x.DisplayName.ToUpper() == SpecificGroup.ToUpper());
             }
             else
             {

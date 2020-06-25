@@ -47,6 +47,14 @@
             "cwd": "${workspaceFolder}"
         },
         {
+            "name": "PS: DEM Passwords Reset Script",
+            "type": "PowerShell",
+            "request": "launch",
+            "args": ["-DebugMode $true"],
+            "script": ".\\Output\\DEM-Password-Reset-Script.ps1",
+            "cwd": "${workspaceFolder}"
+        },
+        {
             "name": "iLAPs Admin (Production Secrets)",
             "type": "coreclr",
             "request": "launch",

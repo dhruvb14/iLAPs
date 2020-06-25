@@ -17,5 +17,6 @@
     "Admin-UI-ClientId":"App-Registration-Client-GUID",
     "Admin-UI-Table-Object-Read-Write-List-Add-Create-Update-SAS-Token":"",
     "Admin-UI-AutomaticPasswordResetInHours": "3",
-    "Admin-UI-MachineNamePrefix" : ""
+    "Admin-UI-MachineNamePrefix" : "",
+    "DEM-Table-Name": "PasteValueHere"
 }

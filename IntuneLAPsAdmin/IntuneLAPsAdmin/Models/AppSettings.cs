@@ -26,7 +26,7 @@ namespace IntuneLAPsAdmin.Models
         [JsonProperty("MachineNamePrefix")] 
         public string MachineNamePrefix { get; set; }
         [JsonProperty("DEMAdminGroups")]
-        public string[] DEMAdminGroups { get; set; }
+        public string DEMAdminGroups { get; set; }
         [JsonProperty("DEMPasswordTable")]
         public string DEMPasswordTable { get; set; }
     }

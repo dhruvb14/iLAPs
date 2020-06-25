@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IntuneLAPsAdmin.Infrastructure;
 using IntuneLAPsAdmin.Models;
-
+using Newtonsoft.Json;
 
 namespace IntuneLAPsAdmin.Services
 {
@@ -21,12 +21,14 @@ namespace IntuneLAPsAdmin.Services
         readonly IOptions<AppSettings> _settings;
         public bool IsLoggedIn { get; set; } = true;
         List<Group> CurrentGroupsFromGraph { get; set; } = new List<Group>();
+        string[] demGroups { get; set; }
         public AuthService(ITokenAcquisition tokenAcquisition,
                               IOptions<WebOptions> webOptionValue, IOptions<AppSettings> settings)
         {
             this.tokenAcquisition = tokenAcquisition;
             this.webOptions = webOptionValue.Value;
             this._settings = settings;
+            demGroups = JsonConvert.DeserializeObject<string[]>(_settings.Value.DEMAdminGroups);
         }
         public async Task<List<Group>> GetGroups()
         {
@@ -46,7 +48,6 @@ namespace IntuneLAPsAdmin.Services
         public async Task<bool> IsInDemGroupAsync()
         {
             var groups = await GetGroups();
-            var demGroups = _settings.Value.DEMAdminGroups;
             return groups.Any(x => demGroups.Any(y => y == x.DisplayName));
         }
         public bool IsInDemGroup(string SpecificGroup)

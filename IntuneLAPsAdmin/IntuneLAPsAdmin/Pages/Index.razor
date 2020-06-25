@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inherits IndexClass
 
 <h1>
     Welcome to iLAPS Admin Utility
@@ -9,4 +10,5 @@
     <li>Automatically reseting machine password after configurable amount of hours if not an SuperUser</li>
     <li>Ability for SuperUsers to not trigger an automatic password reset</li>
     <li>Logging of All User Actions</li>
+    <IsInDEMGroup SupressErrorMessage="true"><li>Support For DEM enrollment password management similar to iLAP password management</li></IsInDEMGroup>
 </ul>

@@ -8,12 +8,21 @@
     @if (IsInDemGroup)
     {
         @ChildContent
+    } else
+    {
+        if (!SupressErrorMessage)
+        {
+        <p>This Application is not configured to support DEM Enrollment Management, please contact your administrator to configure this feature</p>
+        }
     }
 }
 
 @code {
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public bool SupressErrorMessage { get; set; } = false;
 
     public bool IsInDemGroup = false;
     public bool IsLoaded = false;

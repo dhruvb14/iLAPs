@@ -30,7 +30,15 @@ namespace IntuneLAPsAdmin.Services
         }
         private string[] GetDemGroups()
         {
-            return JsonConvert.DeserializeObject<string[]>(_settings.Value.DEMAdminGroups);
+            var admingroups = _settings.Value.DEMAdminGroups;
+            if (string.IsNullOrEmpty(admingroups))
+            {
+                return JsonConvert.DeserializeObject<string[]>("['']");
+            }
+            else
+            {
+                return JsonConvert.DeserializeObject<string[]>(_settings.Value.DEMAdminGroups);
+            }
         }
         public async Task<List<Group>> GetGroups()
         {

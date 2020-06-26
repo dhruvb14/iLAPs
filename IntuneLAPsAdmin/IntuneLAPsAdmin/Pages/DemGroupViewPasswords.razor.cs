@@ -26,13 +26,22 @@ namespace IntuneLAPsAdmin.Pages
         {
             ShowResults = false;
             var allResults = await Service.GetDemPasswordsAsync();
-            foreach (var result in allResults.value)
+
+            if (await AuthService.IsInDemSuperAdminGroupAsync())
             {
-                if (AuthService.IsInDemGroup(result.Account))
+                results = allResults.value;
+            }
+            else
+            {
+                foreach (var result in allResults.value)
                 {
-                    results.Add(result);
+                    if (AuthService.IsInDemGroup(result.Account))
+                    {
+                        results.Add(result);
+                    }
                 }
             }
+
             if (results.Count > 0)
             {
                 ShowResults = true;

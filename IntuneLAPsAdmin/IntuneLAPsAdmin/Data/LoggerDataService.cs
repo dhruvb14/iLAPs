@@ -66,7 +66,7 @@ namespace IntuneLAPsAdmin.Data
         {
             //var Url = "(PartitionKey='ActivityLog')?$top=100";
             var Url = "?$top=100";
-            HostNameFilter = HostNameFilter.HostnamePrefix(_settings.Value.MachineNamePrefix);
+            HostNameFilter = HostNameFilter.HostnameUpdate();
             Url += FilterBuilder(HostNameFilter, UserNameFilter);
             var results = await http.GetLogJsonAsync<LogResult>(Url);
             if (results.value.Count() == 0)
@@ -84,7 +84,7 @@ namespace IntuneLAPsAdmin.Data
         {
             //var Url = "(PartitionKey='ActivityLog')?$top=100";
             var Url = "?$top=100";
-            HostNameFilter = HostNameFilter.HostnamePrefix(_settings.Value.MachineNamePrefix);
+            HostNameFilter = HostNameFilter.HostnameUpdate();
             Url += FilterBuilder(HostNameFilter, UserNameFilter);
             Url += $"&NextPartitionKey={currentViewModel.NextPartitionKey}&NextRowKey={currentViewModel.NextRowKey}";
             var results = await http.GetLogJsonAsync<LogResult>(Url);

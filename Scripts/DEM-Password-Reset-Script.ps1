@@ -26,6 +26,8 @@
     
 Param
 (
+    #Encryption key.
+    [parameter(Mandatory=$true)][string]$SecretKey = "Global-Encryption-Key",
     #Azure endpoint.
     [parameter(Mandatory=$true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
     #Azure Shared Access SIgnature.
@@ -116,7 +118,36 @@ New-Item -Path 'C:\Logs\DEM Reset\' -ItemType Directory -ErrorAction Ignore;;
 <# Input - End #>
 ################################################
 <# Functions - Start #>
+Function Set-SecretKey
+{
+    [CmdletBinding()]
+    Param
+    (
+        [string]$Key
+    )
 
+    #Get key length.
+    $Length = $Key.Length;
+    
+    #Pad length.
+    $Pad = 32-$Length;
+    
+    #If the length is less than 16 or more than 32.
+    If($Length -ne 32)
+    {
+        #Throw exception.
+        Throw "SecureKey String must be 32 characters";
+    }
+    
+    #Create a new ASCII encoding object.
+    $Encoding = New-Object System.Text.ASCIIEncoding;
+
+    #Get byte array.
+    $Bytes = $Encoding.GetBytes($Key + "0" * $Pad);
+
+    #Return byte array.
+    Return $Bytes;
+}
 Function Test-InternetConnection {
     [CmdletBinding()]
     
@@ -404,6 +435,7 @@ Function UpdateAdminPassword {
     #Write out to the log file.
     Write-Log -File $LogFile -Status Information -Text ("Encrypting password for $($item.AccountEmailAddress).");
     #Encrypt password.
+    $EncryptionKey = Set-SecretKey -Key ($SecretKey);
     $EncryptedPassword = Set-EncryptedData -Key $EncryptionKey -TextInput $Password;
     If($DebugMode){
         Write-Log -File $LogFile -Status Information -Text ("DID NOT EXECUTE COMMAND - Would have Updated Identity $($item.AccountEmailAddress.Split("@")[0]) with Plain Password $($Password)");

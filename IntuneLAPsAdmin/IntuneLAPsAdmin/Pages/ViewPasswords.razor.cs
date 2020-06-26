@@ -25,6 +25,8 @@ namespace IntuneLAPsAdmin.Pages
         protected override void OnInitialized()
         {
             ShowResults = false;
+            HostnameFilter = InjectedAppSettings.Value.MachineNamePrefix;
+            StateHasChanged();
         }
 
         public async void OnSearchCriteria()

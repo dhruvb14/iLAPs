@@ -30,15 +30,37 @@ namespace IntuneLAPsAdmin.Services
         }
         private string[] GetDemGroups()
         {
-            var admingroups = _settings.Value.DEMAdminGroups;
-            if (string.IsNullOrEmpty(admingroups))
+            var AdminGroups = _settings.Value.DEMAdminGroups;
+            var SuperAdminGroups = _settings.Value.DEMSuperAdminGroups;
+            string[] ReturnedGroups;
+            if (string.IsNullOrEmpty(AdminGroups))
             {
-                return JsonConvert.DeserializeObject<string[]>("['']");
+                ReturnedGroups = JsonConvert.DeserializeObject<string[]>("['']");
             }
             else
             {
-                return JsonConvert.DeserializeObject<string[]>(_settings.Value.DEMAdminGroups);
+                ReturnedGroups = JsonConvert.DeserializeObject<string[]>(AdminGroups);
             }
+            if (!string.IsNullOrEmpty(SuperAdminGroups))
+            {
+                var TempSuperAdminGroups = JsonConvert.DeserializeObject<string[]>(SuperAdminGroups);
+                ReturnedGroups = ReturnedGroups.Concat(TempSuperAdminGroups).ToArray();
+            }
+            return ReturnedGroups;
+        }
+        private string[] GetDemAdminGroups()
+        {
+            var SuperAdminGroups = _settings.Value.DEMSuperAdminGroups;
+            string[] ReturnedGroups;
+            if (string.IsNullOrEmpty(SuperAdminGroups))
+            {
+                ReturnedGroups = JsonConvert.DeserializeObject<string[]>("['']");
+            }
+            else
+            {
+                ReturnedGroups = JsonConvert.DeserializeObject<string[]>(SuperAdminGroups);
+            }
+            return ReturnedGroups;
         }
         public async Task<List<Group>> GetGroups()
         {
@@ -59,6 +81,11 @@ namespace IntuneLAPsAdmin.Services
         {
             var groups = await GetGroups();
             return groups.Any(x => GetDemGroups().Any(y => y.ToUpper() == x.DisplayName.ToUpper()));
+        }
+        public async Task<bool> IsInDemSuperAdminGroupAsync()
+        {
+            var groups = await GetGroups();
+            return groups.Any(x => GetDemAdminGroups().Any(y => y.ToUpper() == x.DisplayName.ToUpper()));
         }
         public bool IsInDemGroup(string SpecificGroup)
         {

@@ -34,7 +34,7 @@ namespace IntuneLAPsAdmin.Data
         public async Task<AdminPasswords> GetAsync(string HostNameFilter, string AccountNameFilter)
         {
             string SerialNumber = null;
-            HostNameFilter = HostNameFilter.HostnamePrefix(_settings.Value.MachineNamePrefix);
+            HostNameFilter = HostNameFilter.HostnameUpdate();
             var LogMessage = $"Perform Search for Hostname: {HostNameFilter}";
             var Url = $"?$filter=Hostname%20eq%20'{HostNameFilter}'";
             if (!string.IsNullOrEmpty(AccountNameFilter))
@@ -115,7 +115,7 @@ namespace IntuneLAPsAdmin.Data
 
         public async Task<ResetPassword> ResetPasswordAsync(string Hostname, string SerialNumber)
         {
-            Hostname = Hostname.HostnamePrefix(_settings.Value.MachineNamePrefix);
+            Hostname = Hostname.HostnameUpdate();
             var Url = $"(PartitionKey='{Hostname}',RowKey='{SerialNumber}')?";
 
             var result = await http.GetResetJsonAsync<ResetPassword>(Url, true);

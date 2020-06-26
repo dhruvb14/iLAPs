@@ -25,7 +25,6 @@ namespace IntuneLAPsAdmin.Pages
             results = await Logs.GetAsync(HostnameFilter, Username);
             ShowResults = true;
         }
-
         public async void OnSearchCriteria()
         {
             ShowResults = false;

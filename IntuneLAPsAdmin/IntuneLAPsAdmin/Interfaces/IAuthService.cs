@@ -12,5 +12,6 @@ namespace IntuneLAPsAdmin.Interfaces
         Task<bool> IsInDemGroupAsync();
         bool IsInDemGroup(string SpecificGroup);
         Task<List<Group>> GetGroups();
+        Task<bool> IsInDemSuperAdminGroupAsync();
     }
 }

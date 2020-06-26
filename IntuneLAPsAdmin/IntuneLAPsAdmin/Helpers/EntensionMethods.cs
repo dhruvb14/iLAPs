@@ -8,21 +8,15 @@ namespace IntuneLAPsAdmin.Helpers
 {
     public static class EntensionMethods
     {
-        public static string HostnamePrefix(this string hostname, string userprefix)
+        public static string HostnameUpdate(this string hostname)
         {
             if (hostname != null && hostname != "")
             {
                 hostname = hostname.ToUpper();
-                var prefix = userprefix.ToUpper();
-                if (hostname.Contains(prefix))
-                {
-                    return hostname;
-                }
-                else
-                {
-                    return $"{prefix}{hostname}";
-                }
-            } else
+
+                return hostname;
+            }
+            else
             {
                 return null;
             }

@@ -1,5 +1,7 @@
 ﻿using IntuneLAPsAdmin.Interfaces;
+using IntuneLAPsAdmin.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using Sotsera.Blazor.Toaster;
 using System;
@@ -26,5 +28,7 @@ namespace IntuneLAPsAdmin.Helpers
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
+        [Inject]
+        public IOptions<AppSettings> InjectedAppSettings { get; set; }
     }
 }

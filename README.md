@@ -120,11 +120,13 @@ Admin UI Web Application Features:
    1. Create Table called `AdminPasswords`
    2. Create Table called `ResetPasswords`
    3. Create Table called `Logs`
-   4. Save into `settings.production.local.json` field shown below
+   4. Create Table called `DEMPasswords`
+   5. Save into `settings.production.local.json` field shown below
 
       ```json
          "Admin-Table-Name": "AdminPasswords",
-         "Reset-Table-Name": "ResetPasswords"
+         "Reset-Table-Name": "ResetPasswords",
+         "DEM-Table-Name": "DEMPasswords",
          "Log-Table-Name": "Logs"
       ```
 
@@ -188,24 +190,38 @@ Admin UI Web Application Features:
                   "lang": null,
                   "origin": "Application",
                   "value": "User"
+               },
+               {
+                  "allowedMemberTypes": [
+                     "User"
+                  ],
+                  "description": "User can only see DEM User Tab",
+                  "displayName": "DEM",
+                  "id": "574cd779-fece-4f33-aa31-d1374e8ea5c2",
+                  "isEnabled": true,
+                  "lang": null,
+                  "origin": "Application",
+                  "value": "DEM"
                }
             ],
          ```
 
-    6. Navigate to Manifest and find `publisherDomain` and remember the value for step 7
-    7. Navigate to Overview tab to save the fields below into `settings.production.local.json`
+    6. Navigate to Manifest and find `publisherDomain` and remember the value for step 8
+    7. Navigate to `Certificates & secrets` and generate a new secret then save it in step 8
+    8. Navigate to Overview tab to save the fields below into `settings.production.local.json`
 
          ```json
             "Admin-UI-Domain": "Type publisherDomain here"
             "Admin-UI-TenantId": "Tenant-GUID",
             "Admin-UI-ClientId": "App-Registration-Client-GUID",
+            "Admin-UI-ClientSecret":"App-Registration-Client-Secret",
          ```
 
-    8. Click `Overview` and in the top header click the link next to `Managed application in local directory`
+    9. Click `Overview` and in the top header click the link next to `Managed application in local directory`
        1. Click `Properties`
        2. Toggle `User Assignment required` to `Yes`
        3. Click `Users and Groups` and add users who should have access to this application.
-          1. Add Role based on if the User is a `User` or a `Super User`. `Super Users` have the ability to view passwords without forcing a reset automatically and view access logs
+          1. Add Role based on if the User is a `User`, `DEM` or a `Super User`. `DEM` has ability to ONLY SEE the DEM tab. `Super Users` have the ability to view DEM Tab, passwords without forcing a reset automatically and view access logs
 
 12. Open `settings.production.local.json` and change set the following settings based on if you are targeting `US Gov Cloud` or `US Commercial Cloud` and your `Customers Name`
     1. US Gov Cloud
@@ -214,6 +230,7 @@ Admin UI Web Application Features:
             "Company-Name": "My Gov Customer Name",
             "Storage-Account-Suffix":"core.usgovcloudapi.net",
             "Admin-UI-Instance":"https://login.microsoftonline.us/",
+            "Admin-UI-GraphApiUrl" : "https://graph.microsoft.us/beta"
          ```
 
     2. US Commercial Cloud
@@ -221,17 +238,33 @@ Admin UI Web Application Features:
          ```json
             "Company-Name": "My Commercial Customer Name",
             "Storage-Account-Suffix":"core.windows.net",
-            "Admin-UI-Instance":"https://login.microsoftonline.com/"
+            "Admin-UI-Instance":"https://login.microsoftonline.com/",
+            "Admin-UI-GraphApiUrl" : "https://graph.microsoft.com/beta"
          ```
 
-13. Ensure you have .NET Core 3.1 SDK installed
+13. If you will be using the DEM Management feature, Please Configure your DEMAdminGroups and DEMSuperAdminGroup. Below is an example how to add multiple to each group. DEMAdminGroups can see DEMAccounts Associate to them and DEMSuperAdmin can see all DEM Accounts. **IF NOT USING DEM ACCOUNT FEATURE PLEASE CLEAR THE FIELDS LIKE SHOWN IN EXAMPLE 2**
+    1. Configure DEM Admins **(if configured please read last step to finish configuration)**
+
+         ```json
+            "Admin-UI-DEMAdminGroups" : "['DEM_ADMIN_GROUP_NAME','DEM_ADMIN_GROUP_NAME_TWO']",
+            "Admin-UI-DEMSuperAdminGroups" : "['DEM_SUPERADMIN_GROUP_NAME','DEM_SUPERADMIN_GROUP_NAME_TWO']",
+         ```
+
+    2. Disable the Feature
+
+         ```json
+            "Admin-UI-DEMAdminGroups" : "",
+            "Admin-UI-DEMSuperAdminGroups" : "",
+         ```
+
+14. Ensure you have .NET Core 3.1 SDK installed
     1. Open Powershell window and navigate to `c:\dev\iLAPs`
     2. run `.\Build.ps1`
 
-14. Open `c:\dev\iLAPs\Output\app-service-advanced-editor-script.json`
+15. Open `c:\dev\iLAPs\Output\app-service-advanced-editor-script.json`
     1. Select all text and copy
 
-15. Navigate to `iLaps-RG` in the portal
+16. Navigate to `iLaps-RG` in the portal
     1. Click `ilaps` App Service
     2. Click `Configuration`
         1. Click `Advanced Edit`
@@ -242,7 +275,7 @@ Admin UI Web Application Features:
         2. Hover over `Tools` then click `Zip Push Deploy`
         3. Open `c:\dev\iLAPs\Output\` in File Explorer
         4. Drag `AdminUI.zip` to Zip Deploy Interface (You will see it turn blue)
-16. Navigate back to `iLaps-RG` Resource Group
+17. Navigate back to `iLaps-RG` Resource Group
     1. Click `ilapscustomername` storage account
     2. Click `File Shares`
     3. Click `installation`
@@ -250,6 +283,15 @@ Admin UI Web Application Features:
        1. Navigate to `c:\dev\iLAPs\Output`
        2. Click both `Reset-LocalAdministratorPassword.ps1` and `Check-Reset-LocalAdministratorPassword.ps1`
        3. Click `Upload`
-17. Navigate to [Use PowerShell scripts on Windows 10 devices in Intune](https://docs.microsoft.com/en-us/mem/intune/apps/intune-management-extension)
+18. Navigate to [Use PowerShell scripts on Windows 10 devices in Intune](https://docs.microsoft.com/en-us/mem/intune/apps/intune-management-extension)
     1. Deploy the code found in `c:\dev\iLAPs\Output\Install-iLaps.ps1` using the guide linked above
-18. ENJOY
+19. If using DEM feature complete this step. Otherwise ENJOY!
+    1. Install and connect to storage account using storage explorer
+    2. Fill out the `DEMPasswords - Import Template.csv` script and hash the password using the hashing script in the Output directory.
+    3. The hashing script takes a string input and returns a hashed output. You can automate the script further on your own but this is provided as a starting point. Example Usage : `.\Output\SaltDEMPasswords.ps1 -PW "MyCrazySuperSecretPassword123!@#"`
+    4. Navigate to `DEMPasswords` table and import the `DEMPasswords - Import Template.csv`
+    5. Manually copy the `DEM-Password-Reset-Script.ps1` from the `Outputs` folder to `C:\Windows\System32` folder on a On-Prem server with AD Powershell Tools installed
+    6. Open an Admin Powershell and navigate to `C:\Windows\System32`
+    7. Run the command `.\DEM-Password-Reset-Script.ps1`
+    8. The script will self install a task which run's hourly and checks the DEM table if it needs to update the Password or not.
+    9. Enjoy

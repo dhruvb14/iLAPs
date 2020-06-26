@@ -11,12 +11,15 @@
     "File-Object-Read-Installer-SAS-Token":"PasteValueHere",
     "Installer-Container-Name":"installation",
     "Log-Table-Name":"Logs",
+    "DEM-Table-Name": "PasteValueHere",
     "Admin-UI-Instance":"https://login.microsoftonline.com/",
     "Admin-UI-Domain":"microsoft.onmicrosoft.com",
     "Admin-UI-TenantId":"Tenant-GUID",
     "Admin-UI-ClientId":"App-Registration-Client-GUID",
+    "Admin-UI-ClientSecret":"App-Registration-Client-Secret",
     "Admin-UI-Table-Object-Read-Write-List-Add-Create-Update-SAS-Token":"",
     "Admin-UI-AutomaticPasswordResetInHours": "3",
-    "Admin-UI-MachineNamePrefix" : "",
-    "DEM-Table-Name": "PasteValueHere"
+    "Admin-UI-DEMAdminGroups" : "['DEM_ADMIN_GROUP_NAME','DEM_ADMIN_GROUP_NAME_TWO']",
+    "Admin-UI-DEMSuperAdminGroups" : "['DEM_SUPERADMIN_GROUP_NAME','DEM_SUPERADMIN_GROUP_NAME_TWO']",
+    "Admin-UI-GraphApiUrl" : "https://graph.microsoft.com/beta"
 }

@@ -1,66 +1,96 @@
 ,
-  {
-    "name": "AppSettings:MachineNamePrefix",
-    "value": "Admin-UI-MachineNamePrefix",
-    "slotSetting": false
-  },
-  {
-    "name": "AppSettings:AutomaticPasswordResetInHours",
-    "value": Admin-UI-AutomaticPasswordResetInHours,
-    "slotSetting": false
-  },  
-  {
-    "name": "AppSettings:ApiUrl",
-    "value": "https://Storage-Account-Name.table.Storage-Account-Suffix/",
-    "slotSetting": false
-  },
-  {
-    "name": "AppSettings:AzureTable",
-    "value": "Admin-Table-Name",
-    "slotSetting": false
-  },
-  {
-    "name": "AppSettings:PasswordResetTable",
-    "value": "Reset-Table-Name",
-    "slotSetting": false
-  },
-  {
-    "name": "AppSettings:SASToken",
-    "value": "Admin-UI-Table-Object-Read-Write-List-Add-Create-Update-SAS-Token",
-    "slotSetting": false
-  },
-  {
-    "name": "AppSettings:SecretKey",
-    "value": "Global-Encryption-Key",
-    "slotSetting": false
-  },
-  {
-    "name": "AzureAd:CallbackPath",
-    "value": "/signin-oidc",
-    "slotSetting": false
-  },
-  {
-    "name": "AzureAd:ClientId",
-    "value": "Admin-UI-ClientId",
-    "slotSetting": false
-  },
-  {
-    "name": "AzureAd:Domain",
-    "value": "Admin-UI-Domain",
-    "slotSetting": false
-  },
-  {
-    "name": "AzureAd:Instance",
-    "value": "Admin-UI-Instance",
-    "slotSetting": false
-  },
-  {
-    "name": "AzureAd:TenantId",
-    "value": "Admin-UI-TenantId",
-    "slotSetting": false
-  },
-  {
-    "name": "WEBSITE_TIME_ZONE",
-    "value": "Eastern Standard Time",
-    "slotSetting": false
-  }
+{
+  "name": "GraphApiUrl",
+  "value": "Admin-UI-GraphApiUrl",
+  "slotSetting": false
+},
+{
+  "name": "AppSettings:MachineNamePrefix",
+  "value": "Admin-UI-MachineNamePrefix",
+  "slotSetting": false
+},
+{
+  "name": "AppSettings:AutomaticPasswordResetInHours",
+  "value": "Admin-UI-AutomaticPasswordResetInHours",
+  "slotSetting": false
+},
+{
+  "name": "AppSettings:ApiUrl",
+  "value": "https://Storage-Account-Name.table.Storage-Account-Suffix/",
+  "slotSetting": false
+},
+{
+  "name": "AppSettings:AzureTable",
+  "value": "Admin-Table-Name",
+  "slotSetting": false
+},
+{
+  "name": "AppSettings:DEMPasswordTable",
+  "value": "DEM-Table-Name",
+  "slotSetting": false
+},
+{
+  "name": "AppSettings:DEMAdminGroups",
+  "value": "Admin-UI-DEMAdminGroups",
+  "slotSetting": false
+},
+{
+  "name": "AppSettings:DEMSuperAdminGroups",
+  "value": "Admin-UI-DEMSuperAdminGroups",
+  "slotSetting": false
+},
+{
+  "name": "AppSettings:PasswordResetTable",
+  "value": "Reset-Table-Name",
+  "slotSetting": false
+},
+{
+  "name": "AppSettings:SASToken",
+  "value": "Admin-UI-Table-Object-Read-Write-List-Add-Create-Update-SAS-Token",
+  "slotSetting": false
+},
+{
+  "name": "AppSettings:SecretKey",
+  "value": "Global-Encryption-Key",
+  "slotSetting": false
+},
+{
+  "name": "AzureAd:CallbackPath",
+  "value": "/signin-oidc",
+  "slotSetting": false
+},
+{
+  "name": "AzureAd:SignedOutCallbackPath",
+  "value": "/signout-callback-oidc",
+  "slotSetting": false
+},
+{
+  "name": "AzureAd:ClientSecret",
+  "value": "Admin-UI-ClientSecret",
+  "slotSetting": false
+},
+{
+  "name": "AzureAd:ClientId",
+  "value": "Admin-UI-ClientId",
+  "slotSetting": false
+},
+{
+  "name": "AzureAd:Domain",
+  "value": "Admin-UI-Domain",
+  "slotSetting": false
+},
+{
+  "name": "AzureAd:Instance",
+  "value": "Admin-UI-Instance",
+  "slotSetting": false
+},
+{
+  "name": "AzureAd:TenantId",
+  "value": "Admin-UI-TenantId",
+  "slotSetting": false
+},
+{
+  "name": "WEBSITE_TIME_ZONE",
+  "value": "Eastern Standard Time",
+  "slotSetting": false
+}

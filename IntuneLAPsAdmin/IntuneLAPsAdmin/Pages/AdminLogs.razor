@@ -10,7 +10,7 @@
         <div class="ml-auto">
             <div class="form-group">
                 <div class="input-group">
-                    <input type="text" placeholder="Machine Name (Prefix1234567)" Id="SearchCriteriaMachine" @bind:event="oninput" @onkeyup="OnEnter" @bind="@HostnameFilter" class="form-control search">
+                    <input type="text" placeholder="Machine Name (Prefix1234567)" Id="SearchCriteriaMachine" @bind-value:event="oninput" @onkeyup="OnEnter" @bind-value="@HostnameFilter" class="form-control search">
                     <div class="input-group-append">
                         <span class="input-group-text" @onclick="OnSearchCriteria"><span class="oi oi-magnifying-glass"></span></span>
                     </div>

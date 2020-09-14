@@ -56,6 +56,7 @@ $ScheduleTaskName = "Reset Admin Password Request";
     <Date>2020-05-18T00:00:00.0000000</Date>
     <Author>Dhruv Bhavsar</Author>
     <URI>\Reset Admin Password Request</URI>
+    <Version>1.0</Version>
   </RegistrationInfo>
   <Triggers>
     <CalendarTrigger>
@@ -103,7 +104,8 @@ $ScheduleTaskName = "Reset Admin Password Request";
   </Settings>
   <Actions Context="Author">
     <Exec>
-      <Command>C:\Windows\System32\Check-Reset-LocalAdministratorPassword.ps1</Command>
+        <Command>C:\windows\system32\WindowsPowerShell\v1.0\powershell.exe</Command>
+        <Arguments>-ExecutionPolicy Bypass -File "C:\Windows\System32\Check-Reset-LocalAdministratorPassword.ps1"</Arguments>
     </Exec>
   </Actions>
 </Task>
@@ -298,6 +300,19 @@ If (!((Test-InternetConnection -Target $AzureEndpoint).TcpTestSucceeded -eq "tru
 Else {
     #Write out to the log file.
     Write-Log -File $LogFile -Status Information -Text "The machine has internet access.";
+}
+
+#Check if the Old schedule task exist. If So, Remove it.
+If (Test-ScheduleTask -Name $ScheduleTaskName) {
+    #Write out to the log file.
+    Write-Log -File $LogFile -Status Warning -Text "Removing $ScheduleTaskName Scheduled Task.";
+
+    #Add schedule task.
+    UnRegister-ScheduledTask -TaskName $ScheduleTaskName -Confirm:$false;
+}
+Else {
+    #Write out to the log file.
+    Write-Log -File $LogFile -Status Warning -Text "$ScheduleTaskName Was not present.";
 }
 
 #Check if the schedule task exist.

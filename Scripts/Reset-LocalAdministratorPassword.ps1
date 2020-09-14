@@ -58,6 +58,7 @@ $ScheduleTaskName = "Password Change";
     <Date>2020-05-18T00:00:00.0000000</Date>
     <Author>Dhruv Bhavsar</Author>
     <URI>\Password Change</URI>
+    <Version>1.0</Version>
   </RegistrationInfo>
   <Triggers>
     <CalendarTrigger>
@@ -117,7 +118,8 @@ $ScheduleTaskName = "Password Change";
   </Settings>
   <Actions Context="Author">
     <Exec>
-      <Command>C:\Windows\System32\Reset-LocalAdministratorPassword.ps1</Command>
+        <Command>C:\windows\system32\WindowsPowerShell\v1.0\powershell.exe</Command>
+        <Arguments>-ExecutionPolicy Bypass -File "C:\Windows\System32\Reset-LocalAdministratorPassword.ps1"</Arguments>
     </Exec>
   </Actions>
 </Task>
@@ -516,6 +518,19 @@ Else
     Write-Log -File $LogFile -Status Information -Text "The machine have internet access.";
 }
 
+#Check if the Old schedule task exist. If So, Remove it.
+If (Test-ScheduleTask -Name $ScheduleTaskName) {
+    #Write out to the log file.
+    Write-Log -File $LogFile -Status Warning -Text "Removing $ScheduleTaskName Scheduled Task.";
+
+    #Add schedule task.
+    UnRegister-ScheduledTask -TaskName $ScheduleTaskName -Confirm:$false;
+}
+Else {
+    #Write out to the log file.
+    Write-Log -File $LogFile -Status Warning -Text "$ScheduleTaskName Was not present.";
+}
+
 #Check if the schedule task exist.
 If(!(Test-ScheduleTask -Name $ScheduleTaskName))
 {
@@ -608,7 +623,7 @@ Foreach ($LocalAdministrator in $LocalAdministrators)
     Write-Log -File $LogFile -Status Information -Text ("Generating new password for '" + ($LocalAdministrator.Name).ToString() + "'.");
 
     #Generate password.
-    $Password = (New-Password -MinPasswordLength 20 -MaxPasswordLength 20 -FirstChar "A");
+    $Password = (New-Password -MinPasswordLength 20 -MaxPasswordLength 20);
     
     #Write out to the log file.
     Write-Log -File $LogFile -Status Information -Text ("Encrypting password for '" + ($LocalAdministrator.Name).ToString() + "'.");
@@ -623,8 +638,26 @@ Foreach ($LocalAdministrator in $LocalAdministrators)
     $UnixTime = [System.Math]::Truncate((Get-Date -Date (Get-Date).ToUniversalTime() -UFormat %s));
 
     #Reset the password and change the description.
-    Set-LocalUser -SID $($LocalAdministrator.SID) -Password $($Password | ConvertTo-SecureString -AsPlainText -Force) -Description ("Managed by " + $CompanyName) -Confirm:$false;
-
+    $SetLocalUserError = $null
+    $NetUserError = $null
+    Try {Set-LocalUser -SID $($LocalAdministrator.SID) -Password $($Password | ConvertTo-SecureString -AsPlainText -Force) -Description ("Managed by " + $CompanyName) -Confirm:$false -ErrorAction Stop;}
+    Catch {
+        $SetLocalUserError = $_.Exception.Message
+        Write-Log -File $LogFile -Status Information -Text ("Error Setting password for '" + ($LocalAdministrator.Name).ToString() + "' via Powershell. Error: $SetLocalUserError. Will attempt with Net User command");    
+        Try {Net User $($LocalAdministrator.Name) $Password}
+        Catch {$NetUserError = $True
+            Write-Log -File $LogFile -Status Information -Text ("Error Setting password for '" + ($LocalAdministrator.Name).ToString() + "' via Net User command Error: $NetUserError. Password Failed even though iLAPS may show a new password ")
+        }
+    }
+    if(!$SetLocalUserError){
+        #Write out to the log file.
+        Write-Log -File $LogFile -Status Information -Text ("Set password for '" + ($LocalAdministrator.Name).ToString() + "' via PowerShell without Error ");
+    }
+    elseif(!$NetUserError){
+        #Write out to the log file.
+        Write-Log -File $LogFile -Status Information -Text ("Set password for '" + ($LocalAdministrator.Name).ToString() + "' via Net User command without Error ");
+    }
+        
     #Create a new object.
     $AccountObject = New-Object -TypeName PSObject;
 

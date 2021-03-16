@@ -64,17 +64,23 @@ namespace IntuneLAPsAdmin.Services
         }
         public async Task<List<Group>> GetGroups()
         {
-            if (CurrentGroupsFromGraph.Count == 0)
+            try
             {
-                Graph::GraphServiceClient graphClient = GetGraphServiceClient(new[] { Infrastructure.Constants.ScopeUserRead });
-                var myGroups = await graphClient.Me.GetMemberGroups(false).Request().PostAsync();
-                foreach (var group in myGroups.CurrentPage)
+                if (CurrentGroupsFromGraph.Count == 0)
                 {
-                    var results = await graphClient.Groups.Request().Filter($"Id eq '{group}'").GetAsync();
-                    CurrentGroupsFromGraph.AddRange(results.CurrentPage);
+                    Graph::GraphServiceClient graphClient = GetGraphServiceClient(new[] { Infrastructure.Constants.ScopeUserRead });
+                    var myGroups = await graphClient.Me.GetMemberGroups(false).Request().PostAsync();
+                    foreach (var group in myGroups.CurrentPage)
+                    {
+                        var results = await graphClient.Groups.Request().Filter($"Id eq '{group}'").GetAsync();
+                        CurrentGroupsFromGraph.AddRange(results.CurrentPage);
+                    }
                 }
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not get groups from GRAPH" + e.ToString());
+            }
             return CurrentGroupsFromGraph;
         }
         public async Task<bool> IsInDemGroupAsync()

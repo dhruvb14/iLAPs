@@ -24,28 +24,36 @@ namespace IntuneLAPsAdmin.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            ShowResults = false;
-            var allResults = await Service.GetDemPasswordsAsync();
+            try
+            {
+                ShowResults = false;
+                var allResults = await Service.GetDemPasswordsAsync();
 
-            if (await AuthService.IsInDemSuperAdminGroupAsync())
-            {
-                results = allResults.value;
-            }
-            else
-            {
-                foreach (var result in allResults.value)
+                if (await AuthService.IsInDemSuperAdminGroupAsync())
                 {
-                    if (AuthService.IsInDemGroup(result.Account))
+                    results = allResults.value;
+                }
+                else
+                {
+                    foreach (var result in allResults.value)
                     {
-                        results.Add(result);
+                        if (AuthService.IsInDemGroup(result.Account))
+                        {
+                            results.Add(result);
+                        }
                     }
                 }
+
+                if (results.Count > 0)
+                {
+                    ShowResults = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
 
-            if (results.Count > 0)
-            {
-                ShowResults = true;
-            }
         }
         public void DecryptPassword(DEMPasswordResults record)
         {

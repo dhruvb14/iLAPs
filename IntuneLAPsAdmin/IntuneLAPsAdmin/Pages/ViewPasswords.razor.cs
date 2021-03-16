@@ -20,7 +20,7 @@ namespace IntuneLAPsAdmin.Pages
         public string HostnameFilter { get; set; }
         public string AccountNameFilter { get; set; }
         public bool ShowResults { get; set; }
-        
+
 
         protected override void OnInitialized()
         {
@@ -32,13 +32,19 @@ namespace IntuneLAPsAdmin.Pages
         public async void OnSearchCriteria()
         {
             ShowResults = false;
-            results = await Service.GetAsync(HostnameFilter, AccountNameFilter);
-
-            if (results.value.Count() != 0)
+            try
             {
-                ShowResults = true;
+                results = await Service.GetAsync(HostnameFilter, AccountNameFilter);
+                if (results.value.Count() != 0)
+                {
+                    ShowResults = true;
+                }
+                StateHasChanged();
             }
-            StateHasChanged();
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
         public void OnEnter(KeyboardEventArgs eventArgs)
         {
@@ -51,7 +57,7 @@ namespace IntuneLAPsAdmin.Pages
         {
             if (AutoResetPassword)
             {
-            Service.DecryptPassword(record);
+                Service.DecryptPassword(record);
             }
             else
             {

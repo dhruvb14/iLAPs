@@ -52,9 +52,10 @@ $Installers = @(
 <# Input - Start #>
 
 # Azure connection info
-$AzureEndpoint = 'https://ilapssa.file.core.usgovcloudapi.net';
-$AzureSharedAccessSignature = '?sv=2019-10-10&ss=f&srt=o&sp=r&se=2021-05-28T06:44:51Z&st=2020-05-26T22:44:51Z&spr=https&sig=elWRXjd5x%2FAF%2Bqkfrhgsnl5XvnU2KhmJJbQvCSibnfU%3D';
-$AzureFileShare = "installation";
+$AzureEndpoint = 'https://Storage-Account-Name.file.Storage-Account-Suffix';
+$AzureSharedAccessSignature = 'File-Object-Read-Installer-SAS-Token';
+$AzureFileShare = "Installer-Container-Name";
+
 
 <# Input - End #>
 ################################################

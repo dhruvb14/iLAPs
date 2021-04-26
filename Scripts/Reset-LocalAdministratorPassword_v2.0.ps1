@@ -27,13 +27,13 @@
 Param
 (
     #Encryption key.
-    [parameter(Mandatory = $false)][string]$SecretKey = "MySecretEncryptionPassword000000",
+    [parameter(Mandatory = $true)][string]$SecretKey = "Global-Encryption-Key",
     #Azure endpoint.
-    [parameter(Mandatory = $false)][string]$AzureEndpoint = 'https://ilapssa.table.core.usgovcloudapi.net',
+    [parameter(Mandatory = $true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
     #Azure Shared Access SIgnature.
-    [parameter(Mandatory = $false)][string]$AzureSharedAccessSignature = '?sv=2019-10-10&ss=t&srt=o&sp=ac&se=2021-05-28T06:44:51Z&st=2020-05-26T22:44:51Z&spr=https&sig=Ezrvqa%2Bmh8a3YN7%2B5l7WraAY7Sgvmn0VIdRJpDp4n%2Bc%3D',
+    [parameter(Mandatory = $true)][string]$AzureSharedAccessSignature = 'Table-Object-Add-Create-SAS-Token',
     #Azure Storage Table.
-    [parameter(Mandatory = $false)][string]$AzureTable = "AdminPasswords",
+    [parameter(Mandatory = $true)][string]$AzureTable = "Admin-Table-Name",
     #Run Script In Debugger Mode
     [parameter(Mandatory = $false)][bool]$DebugMode = $false
 )

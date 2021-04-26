@@ -27,11 +27,11 @@
 Param
 (
     #Azure endpoint.
-    [parameter(Mandatory = $false)][string]$AzureEndpoint = 'https://ilapssa.table.core.usgovcloudapi.net',
+    [parameter(Mandatory = $true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
     #Azure Shared Access SIgnature.
-    [parameter(Mandatory = $false)][string]$AzureSharedAccessSignature = '?sv=2019-10-10&ss=t&srt=o&sp=ru&se=2021-05-28T06:44:51Z&st=2020-05-26T22:44:51Z&spr=https&sig=imTothQv%2FPvW1Ac2%2Bs%2BcN1Z%2F%2FC9i0%2BmVnvwCa%2BQfTsE%3D',
+    [parameter(Mandatory = $true)][string]$AzureSharedAccessSignature = 'Table-Object-Read-Update-SAS-Token',
     #Azure Storage Table.
-    [parameter(Mandatory = $false)][string]$AzureTable = "ResetPasswords",
+    [parameter(Mandatory = $true)][string]$AzureTable = "Reset-Table-Name",
     #Run Script In Debugger Mode
     [parameter(Mandatory = $false)][bool]$DebugMode = $false
 )

@@ -52,8 +52,8 @@ $Installers = @(
 <# Input - Start #>
 
 # Azure connection info
-$AzureEndpoint = 'https://Storage-Account-Name.file.Storage-Account-Suffix';
-$AzureSharedAccessSignature = 'File-Object-Read-Installer-SAS-Token';
+$AzureEndpoint = 'https://Storage-Account-Name.blob.Storage-Account-Suffix';
+$AzureSharedAccessSignature = 'Blob-Object-Read-Installer-SAS-Token';
 $AzureFileShare = "Installer-Container-Name";
 
 

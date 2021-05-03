@@ -91,7 +91,7 @@ Admin UI Web Application Features:
       ```
 
 6. Create Shared Access Signature for `Installation Script`
-   1. Allowed Services: File
+   1. Allowed Services: Blob
    2. Allowed Resource Types: Object
    3. Allowed Permissions: Read
    4. Set Start and End Expiration dates
@@ -100,7 +100,7 @@ Admin UI Web Application Features:
    7. Save into `settings.production.local.json` field shown below
 
       ```json
-         "File-Object-Read-Installer-SAS-Token": "PasteValueHere"
+         "Blob-Object-Read-Installer-SAS-Token": "PasteValueHere"
       ```
 
 7. Create Shared Access Signature for `Admin UI`

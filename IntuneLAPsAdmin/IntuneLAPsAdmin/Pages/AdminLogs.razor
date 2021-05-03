@@ -3,6 +3,7 @@
 @inherits AdminLogsClass
 
 @using IntuneLAPsAdmin.Models;
+@using IntuneLAPsAdmin.Pages;
 
 <h1>Authorized Use Only (View Logs)</h1>
 <div class="row">
@@ -33,8 +34,7 @@
 </div>
 
 
-
-
+<LoadingSpinner Loading="IsLoading" Relative="true" CssClass="transparent">
 @if (!ShowResults)
 {
     <p><em>No Logs Matching Criteria</em></p>
@@ -52,7 +52,7 @@ else
             </tr>
         </thead>
         <tbody>
-            
+
             @foreach (Log record in results.value)
             {
                 <tr>
@@ -66,3 +66,4 @@ else
         </tbody>
     </table>
 }
+</LoadingSpinner>

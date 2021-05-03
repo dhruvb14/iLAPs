@@ -1,0 +1,35 @@
+﻿@if (Loading)
+{
+    <div class="loading @CssClass"><div class="spinner"></div></div>
+}
+else
+{
+    <div class="contentWrapper @FadeClass">
+        @ChildContent
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool Loading { get; set; }
+
+    [Parameter]
+    public bool Relative { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private string FadeClass { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Relative) CssClass += " loading-relative";
+
+        //add the fade in effect to the content
+        await Task.Delay(500);
+        FadeClass = Loading ? "" : "fade-in";
+    }
+}

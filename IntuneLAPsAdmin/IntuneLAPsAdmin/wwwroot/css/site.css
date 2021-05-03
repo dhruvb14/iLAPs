@@ -188,3 +188,104 @@ app {
     margin-right: auto;
     width: 50%;
 }
+/*loading spinner container*/
+.loadingspinner-container {
+    position: relative;
+    z-index: 800;
+}
+
+/* loading spinner */
+.loading {
+    display: inline-block;
+    width: 100%;
+    min-height: 200px;
+    height: 100%;
+    z-index: 1000;
+}
+
+    .loading div.spinner {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 150px;
+        height: 150px;
+        margin: -75px 0 0 -75px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: #2196f3;
+        -webkit-animation: spin 2s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
+        animation: spin 2s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+    }
+
+.loading-relative {
+    height: inherit;
+}
+
+    .loading-relative div.spinner {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        margin: 40px 50px 20px 0;
+        left: calc(50% - 50px);
+    }
+
+.loading div.spinner:before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    right: 5px;
+    bottom: 5px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #393836;
+    -webkit-animation: spin 3s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
+    animation: spin 3s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+}
+
+.loading div.spinner:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    -webkit-animation: spin 1.5s linear infinite; /* Chrome, Opera 15+, Safari 5+ */
+    animation: spin 1.5s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+}
+
+
+.contentWrapper {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+    .contentWrapper.fade-in {
+        opacity: 1;
+    }
+
+/* Save button spin class */
+
+.spin {
+    animation: spin 1.5s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+}
+
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg); /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: rotate(0deg); /* IE 9 */
+        transform: rotate(0deg); /* Firefox 16+, IE 10+, Opera */
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg); /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: rotate(360deg); /* IE 9 */
+        transform: rotate(360deg); /* Firefox 16+, IE 10+, Opera */
+    }
+}

@@ -11,5 +11,6 @@ namespace IntuneLAPsAdmin.Interfaces
     {
         public void UpdateAccessLogs(string UserAction, string UserQuery, string InputHostname = "N/A");
         Task<LogResult> GetAsync(string HostNameFilter, string UserNameFilter);
+        Task<LogResult> GetAdditionalResultsAsync(string HostNameFilter, string UserNameFilter, LogResult currentViewModel);
     }
 }

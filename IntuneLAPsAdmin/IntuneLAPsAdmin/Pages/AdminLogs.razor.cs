@@ -46,5 +46,9 @@ namespace IntuneLAPsAdmin.Pages
                 OnSearchCriteria();
             }
         }
+        public async Task LoadMoreLogsAsync()
+        {
+            results = await Logs.GetAdditionalResultsAsync(results.OriginalHostName, results.OriginalUserName, results);
+        }
     }
 }

@@ -93,4 +93,9 @@
   "name": "WEBSITE_TIME_ZONE",
   "value": "Eastern Standard Time",
   "slotSetting": false
+},
+{
+  "name": "AppSettings:LogTable",
+  "value": "Log-Table-Name",
+  "slotSetting": false
 }

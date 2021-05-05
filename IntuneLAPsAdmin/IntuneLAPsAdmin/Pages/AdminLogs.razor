@@ -3,6 +3,7 @@
 @inherits AdminLogsClass
 
 @using IntuneLAPsAdmin.Models;
+@using IntuneLAPsAdmin.Pages;
 
 <h1>Authorized Use Only (View Logs)</h1>
 <div class="row">
@@ -33,36 +34,40 @@
 </div>
 
 
-
-
-@if (!ShowResults)
-{
-    <p><em>No Logs Matching Criteria</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Hostname</th>
-                <th>Action</th>
-                <th>ActionTime</th>
-                <th>Query</th>
-            </tr>
-        </thead>
-        <tbody>
-            
-            @foreach (Log record in results.value)
-            {
+<LoadingSpinner Loading="IsLoading" Relative="true" CssClass="transparent">
+    @if (!ShowResults)
+    {
+        <p><em>No Logs Matching Criteria</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@record.Username</td>
-                    <td>@record.Hostname</td>
-                    <td>@record.Action</td>
-                    <td>@record.ActionTime.ToLocalTime()</td>
-                    <td>@record.Query</td>
+                    <th>Username</th>
+                    <th>Hostname</th>
+                    <th>Action</th>
+                    <th>ActionTime</th>
+                    <th>Query</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody>
+
+                @foreach (Log record in results.value)
+                {
+                    <tr>
+                        <td>@record.Username</td>
+                        <td>@record.Hostname</td>
+                        <td>@record.Action</td>
+                        <td>@record.ActionTime.ToLocalTime()</td>
+                        <td>@record.Query</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        if (!string.IsNullOrEmpty(results.NextPartitionKey) && !string.IsNullOrEmpty(results.NextRowKey))
+        {
+            <center><button @onclick="LoadMoreLogsAsync" type="button" class="btn btn-info w-100">Load More Logs</button></center>
+        }
+    }
+</LoadingSpinner>

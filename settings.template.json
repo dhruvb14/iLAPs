@@ -8,7 +8,7 @@
     "Reset-Table-Name": "ResetPasswords",
     "Storage-Account-Name":"PasteValueHere",
     "Storage-Account-Suffix":"core.usgovcloudapi.net",
-    "File-Object-Read-Installer-SAS-Token":"PasteValueHere",
+    "Blob-Object-Read-Installer-SAS-Token":"PasteValueHere",
     "Installer-Container-Name":"installation",
     "Log-Table-Name":"Logs",
     "DEM-Table-Name": "PasteValueHere",

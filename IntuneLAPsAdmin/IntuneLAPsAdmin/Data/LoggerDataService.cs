@@ -73,11 +73,9 @@ namespace IntuneLAPsAdmin.Data
             {
                 _toaster.Error($"The Log you are requesting could not be found.");
             }
-
-            while (!string.IsNullOrEmpty(results.NextPartitionKey) && !string.IsNullOrEmpty(results.NextRowKey))
-            {
-                results = await GetAdditionalResultsAsync(HostNameFilter, UserNameFilter, results);
-            }
+            results.OriginalHostName = HostNameFilter;
+            results.OriginalUserName = UserNameFilter;
+            
             return results;
         }
         public async Task<LogResult> GetAdditionalResultsAsync(string HostNameFilter, string UserNameFilter, LogResult currentViewModel)

@@ -20,6 +20,7 @@ namespace IntuneLAPsAdmin.Pages
         public string HostnameFilter { get; set; }
         public string AccountNameFilter { get; set; }
         public bool ShowResults { get; set; }
+        public bool IsLoading { get; set; } = false;
 
 
         protected override async Task OnInitializedAsync()
@@ -27,6 +28,7 @@ namespace IntuneLAPsAdmin.Pages
             try
             {
                 ShowResults = false;
+                IsLoading = true;
                 var allResults = await Service.GetDemPasswordsAsync();
 
                 if (await AuthService.IsInDemSuperAdminGroupAsync())
@@ -47,6 +49,7 @@ namespace IntuneLAPsAdmin.Pages
                 if (results.Count > 0)
                 {
                     ShowResults = true;
+                    IsLoading = false;
                 }
             }
             catch (Exception ex)

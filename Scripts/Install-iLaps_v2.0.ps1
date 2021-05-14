@@ -31,7 +31,7 @@ Param
 
 # Variables
 $LogFilePath = "C:\Logs\Intune Management"
-$V1CleanupPath = "C:\Windows\system32"
+$V1CleanupPath = "C:\Windows\System32"
 $ScriptsFilePath = "C:\Windows\System32\Intune Management"
 $Solution = "iLaps"
 $LogFile = ("$LogFilePath\" + "$Solution-" + ((Get-Date).ToString("yyyyMMdd") + ".log"));

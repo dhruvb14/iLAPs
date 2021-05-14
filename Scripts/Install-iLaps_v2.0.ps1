@@ -31,6 +31,7 @@ Param
 
 # Variables
 $LogFilePath = "C:\Logs\Intune Management"
+$V1CleanupPath = "C:\Windows\system32"
 $ScriptsFilePath = "C:\Windows\System32\Intune Management"
 $Solution = "iLaps"
 $LogFile = ("$LogFilePath\" + "$Solution-" + ((Get-Date).ToString("yyyyMMdd") + ".log"));
@@ -158,7 +159,8 @@ foreach ($installer in $installers) {
     try {
         # Remove existing scripts.
         Remove-Item ($Path + "\" + $Installer) -ErrorAction Ignore;
-        
+        # Remove V1 Scripts if they exist
+        Remove-Item ($V1CleanupPath + "\" + $Installer) -ErrorAction Ignore;
         # Download scripts from Azure BLOB storage
         Invoke-WebRequest ($AzureEndpoint + "/" + $AzureFileShare + "/" + $Installer + $AzureSharedAccessSignature) -OutFile ($Path + "\" + $Installer);
         Write-Log -File $LogFile -Status Information -Text "Finished download request for $($Installer).";

@@ -13,7 +13,7 @@
 
     .NOTES
     Original Author: Alex Ã˜. T. Hansen
-    Current Implementation Author: Dhruv Bhavsar
+    Current Implementation Author: Dhruv Bhavsar and Theron Howton
     Date: 19-05-2020
     Last Updated: 19-05-2020
 

@@ -43,6 +43,11 @@ If ($DebugMode) {
 }
 
 # Installation packages - script names
+$V1Installers = @(
+    "Reset-LocalAdministratorPassword.ps1",
+    "Check-Reset-LocalAdministratorPassword.ps1"
+) 
+
 $Installers = @(
     "Reset-LocalAdministratorPassword_v2.0.ps1",
     "Check-Reset-LocalAdministratorPassword_v2.0.ps1"
@@ -153,14 +158,22 @@ catch {
 }
 
 # Download scripts from BLOB storage.
+Write-Log -File $LogFile -Status Information -Text "Starting V1 script cleanup";
+foreach ($Installer in $V1Installers) {
+    try {
+        # Remove V1 Scripts if they exist
+        Remove-Item ($V1CleanupPath + "\" + $Installer) -ErrorAction Ignore;
+    }
+    catch {
+        Write-Log -File $LogFile -Status Error -Text "$Error[0]"
+    }
+}
 Write-Log -File $LogFile -Status Information -Text "Starting download request.";
 
-foreach ($installer in $installers) {
+foreach ($Installer in $Installers) {
     try {
         # Remove existing scripts.
         Remove-Item ($Path + "\" + $Installer) -ErrorAction Ignore;
-        # Remove V1 Scripts if they exist
-        Remove-Item ($V1CleanupPath + "\" + $Installer) -ErrorAction Ignore;
         # Download scripts from Azure BLOB storage
         Invoke-WebRequest ($AzureEndpoint + "/" + $AzureFileShare + "/" + $Installer + $AzureSharedAccessSignature) -OutFile ($Path + "\" + $Installer);
         Write-Log -File $LogFile -Status Information -Text "Finished download request for $($Installer).";

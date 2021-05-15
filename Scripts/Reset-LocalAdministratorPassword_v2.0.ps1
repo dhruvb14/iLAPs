@@ -41,10 +41,10 @@ Param
 <# Parameters - End #>
 ################################################
 <# Bootstrap - Start #>
-$CompanyName = "CompanyName";
+$CompanyName = "Company-Name";
 
 # Old Scheduled Task Name
-$OldScheduleTaskName = "ULMS iLAPS Reset Admin Password v1.0";
+$OldScheduleTaskName = "iLAPS Reset Admin Password v1.0";
 
 # Scheduled Task
 $ScheduleTaskName = "iLAPS Reset Admin Password v2.0";
@@ -72,7 +72,7 @@ If ($DebugMode) {
   <RegistrationInfo>
     <Date>2020-05-18T00:00:00.0000000</Date>
     <Author>Dhruv Bhavsar</Author>
-    <URI>\iLAPS Reset Admin Password</URI>
+    <URI>\iLAPS Reset Admin Password v2.0</URI>
     <Version>1.0</Version>
   </RegistrationInfo>
   <Triggers>

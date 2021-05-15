@@ -27,15 +27,15 @@
 Param
 (
     #Encryption key.
-    [parameter(Mandatory=$true)][string]$SecretKey = "Global-Encryption-Key",
+    [parameter(Mandatory = $true)][string]$SecretKey = "Global-Encryption-Key",
     #Azure endpoint.
-    [parameter(Mandatory=$true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
+    [parameter(Mandatory = $true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
     #Azure Shared Access SIgnature.
-    [parameter(Mandatory=$true)][string]$AzureSharedAccessSignature  = 'Table-Object-Add-Create-SAS-Token',
+    [parameter(Mandatory = $true)][string]$AzureSharedAccessSignature = 'Table-Object-Add-Create-SAS-Token',
     #Azure Storage Table.
-    [parameter(Mandatory=$true)][string]$AzureTable = "Admin-Table-Name",
+    [parameter(Mandatory = $true)][string]$AzureTable = "Admin-Table-Name",
     #Run Script In Debugger Mode
-    [parameter(Mandatory=$false)][bool]$DebugMode = $false
+    [parameter(Mandatory = $false)][bool]$DebugMode = $false
 )
 
 <# Parameters - End #>
@@ -50,14 +50,14 @@ New-Item -ItemType Directory -Force -Path "C:\Logs\Intune LAPS" | Out-Null;
 <# Input - Start #>
 
 #Schedule Task.
-$ScheduleTaskName = "Password Change";
+$ScheduleTaskName = "iLAPS Reset Admin Password v1.0";
 @"
 <?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
   <RegistrationInfo>
     <Date>2020-05-18T00:00:00.0000000</Date>
     <Author>Dhruv Bhavsar</Author>
-    <URI>\Password Change</URI>
+    <URI>\iLAPS Reset Admin Password v1.0</URI>
     <Version>1.0</Version>
   </RegistrationInfo>
   <Triggers>
@@ -132,49 +132,47 @@ $LogFile = ("C:\Logs\Intune LAPS\" + ((Get-Date).ToString("ddMMyyyy") + ".log"))
 ################################################
 <# Functions - Start #>
 
-Function Test-InternetConnection
-{
+Function Test-InternetConnection {
     [CmdletBinding()]
     
     Param
     (
-        [parameter(Mandatory=$true)][string]$Target
+        [parameter(Mandatory = $true)][string]$Target
     )
 
     #Test the connection to target.
-    $Result = Test-NetConnection -ComputerName ($Target -replace "https://","") -Port 443 -WarningAction SilentlyContinue;
+    $Result = Test-NetConnection -ComputerName ($Target -replace "https://", "") -Port 443 -WarningAction SilentlyContinue;
 
     #Return result.
     Return $Result;
 }
 
 #Generate passwords.
-Function New-Password
-{
-    [CmdletBinding(DefaultParameterSetName='FixedLength',ConfirmImpact='None')]
+Function New-Password {
+    [CmdletBinding(DefaultParameterSetName = 'FixedLength', ConfirmImpact = 'None')]
     [OutputType([String])]
     Param
     (
         # Specifies minimum password length
-        [Parameter(Mandatory=$false,
-                   ParameterSetName='RandomLength')]
-        [ValidateScript({$_ -gt 0})]
+        [Parameter(Mandatory = $false,
+            ParameterSetName = 'RandomLength')]
+        [ValidateScript( { $_ -gt 0 })]
         [Alias('Min')] 
         [int]$MinPasswordLength = 16,
         
         # Specifies maximum password length
-        [Parameter(Mandatory=$false,
-                   ParameterSetName='RandomLength')]
-        [ValidateScript({
-                if($_ -ge $MinPasswordLength){$true}
-                else{Throw 'Max value cannot be lesser than min value.'}})]
+        [Parameter(Mandatory = $false,
+            ParameterSetName = 'RandomLength')]
+        [ValidateScript( {
+                if ($_ -ge $MinPasswordLength) { $true }
+                else { Throw 'Max value cannot be lesser than min value.' } })]
         [Alias('Max')]
         [int]$MaxPasswordLength = 20,
 
         # Specifies a fixed password length
-        [Parameter(Mandatory=$false,
-                   ParameterSetName='FixedLength')]
-        [ValidateRange(1,2147483647)]
+        [Parameter(Mandatory = $false,
+            ParameterSetName = 'FixedLength')]
+        [ValidateRange(1, 2147483647)]
         [int]$PasswordLength = 20,
         
         # Specifies an array of strings containing charactergroups from which the password will be generated.
@@ -186,11 +184,11 @@ Function New-Password
         [String] $FirstChar,
         
         # Specifies number of passwords to generate.
-        [ValidateRange(1,2147483647)]
+        [ValidateRange(1, 2147483647)]
         [int]$Count = 1
     )
     Begin {
-        Function Get-Seed{
+        Function Get-Seed {
             # Generate a seed for randomization
             $RandomBytes = New-Object -TypeName 'System.Byte[]' 4
             $Random = New-Object -TypeName 'System.Security.Cryptography.RNGCryptoServiceProvider'
@@ -199,18 +197,17 @@ Function New-Password
         }
     }
     Process {
-        For($iteration = 1;$iteration -le $Count; $iteration++){
+        For ($iteration = 1; $iteration -le $Count; $iteration++) {
             $Password = @{}
             # Create char arrays containing groups of possible chars
             [char[][]]$CharGroups = $InputStrings
 
             # Create char array containing all chars
-            $AllChars = $CharGroups | ForEach-Object {[Char[]]$_}
+            $AllChars = $CharGroups | ForEach-Object { [Char[]]$_ }
 
             # Set password length
-            if($PSCmdlet.ParameterSetName -eq 'RandomLength')
-            {
-                if($MinPasswordLength -eq $MaxPasswordLength) {
+            if ($PSCmdlet.ParameterSetName -eq 'RandomLength') {
+                if ($MinPasswordLength -eq $MaxPasswordLength) {
                     # If password length is set, use set length
                     $PasswordLength = $MinPasswordLength
                 }
@@ -221,54 +218,53 @@ Function New-Password
             }
 
             # If FirstChar is defined, randomize first char in password from that string.
-            if($PSBoundParameters.ContainsKey('FirstChar')){
-                $Password.Add(0,$FirstChar[((Get-Seed) % $FirstChar.Length)])
+            if ($PSBoundParameters.ContainsKey('FirstChar')) {
+                $Password.Add(0, $FirstChar[((Get-Seed) % $FirstChar.Length)])
             }
             # Randomize one char from each group
-            Foreach($Group in $CharGroups) {
-                if($Password.Count -lt $PasswordLength) {
+            Foreach ($Group in $CharGroups) {
+                if ($Password.Count -lt $PasswordLength) {
                     $Index = Get-Seed
-                    While ($Password.ContainsKey($Index)){
+                    While ($Password.ContainsKey($Index)) {
                         $Index = Get-Seed                        
                     }
-                    $Password.Add($Index,$Group[((Get-Seed) % $Group.Count)])
+                    $Password.Add($Index, $Group[((Get-Seed) % $Group.Count)])
                 }
             }
 
             # Fill out with chars from $AllChars
-            for($i=$Password.Count;$i -lt $PasswordLength;$i++) {
+            for ($i = $Password.Count; $i -lt $PasswordLength; $i++) {
                 $Index = Get-Seed
-                While ($Password.ContainsKey($Index)){
+                While ($Password.ContainsKey($Index)) {
                     $Index = Get-Seed                        
                 }
-                $Password.Add($Index,$AllChars[((Get-Seed) % $AllChars.Count)])
+                $Password.Add($Index, $AllChars[((Get-Seed) % $AllChars.Count)])
             }
-            Write-Output -InputObject $(-join ($Password.GetEnumerator() | Sort-Object -Property Name | Select-Object -ExpandProperty Value))
+            Write-Output -InputObject $( -join ($Password.GetEnumerator() | Sort-Object -Property Name | Select-Object -ExpandProperty Value))
         }
     }
 }
 
 #Insert data to Azure tables.
-Function Add-AzureTableData
-{
+Function Add-AzureTableData {
     [CmdletBinding()]
     
     Param
     (
-        [parameter(Mandatory=$true)][string]$Endpoint,
-        [parameter(Mandatory=$true)][string]$SharedAccessSignature,
-        [parameter(Mandatory=$true)][string]$Table,
-        [parameter(Mandatory=$true)][hashtable]$TableData
+        [parameter(Mandatory = $true)][string]$Endpoint,
+        [parameter(Mandatory = $true)][string]$SharedAccessSignature,
+        [parameter(Mandatory = $true)][string]$Table,
+        [parameter(Mandatory = $true)][hashtable]$TableData
     )
 
     #Create request header.
     $Headers = @{
-        "x-ms-date"=(Get-Date -Format r);
-        "x-ms-version"="2016-05-31";
-        "Accept-Charset"="UTF-8";
-        "DataServiceVersion"="3.0;NetFx";
-        "MaxDataServiceVersion"="3.0;NetFx";
-        "Accept"="application/json;odata=nometadata"
+        "x-ms-date"             = (Get-Date -Format r);
+        "x-ms-version"          = "2016-05-31";
+        "Accept-Charset"        = "UTF-8";
+        "DataServiceVersion"    = "3.0;NetFx";
+        "MaxDataServiceVersion" = "3.0;NetFx";
+        "Accept"                = "application/json;odata=nometadata"
     };
 
     $URI
@@ -284,8 +280,7 @@ Function Add-AzureTableData
 }
 
 #Generate a secret key.
-Function Set-SecretKey
-{
+Function Set-SecretKey {
     [CmdletBinding()]
     Param
     (
@@ -296,11 +291,10 @@ Function Set-SecretKey
     $Length = $Key.Length;
     
     #Pad length.
-    $Pad = 32-$Length;
+    $Pad = 32 - $Length;
     
     #If the length is less than 16 or more than 32.
-    If($Length -ne 32)
-    {
+    If ($Length -ne 32) {
         #Throw exception.
         Throw "SecureKey String must be 32 characters";
     }
@@ -316,8 +310,7 @@ Function Set-SecretKey
 }
 
 #Encrypt data with a secret key.
-Function Set-EncryptedData
-{
+Function Set-EncryptedData {
     [CmdletBinding()]
     Param
     (
@@ -332,8 +325,7 @@ Function Set-EncryptedData
     $Chars = $TextInput.ToCharArray();
     
     #Foreach char in the array.
-    ForEach($Char in $Chars)
-    {
+    ForEach ($Char in $Chars) {
         #Append the char to the secure string.
         $SecureString.AppendChar($Char);
     }
@@ -345,19 +337,17 @@ Function Set-EncryptedData
     return $EncryptedData;
 }
 
-Function ConvertTo-HashTable
-{
+Function ConvertTo-HashTable {
     [cmdletbinding()]
      
     Param
     (
-        [Parameter(Position=0,Mandatory=$True,ValueFromPipeline=$True)]
+        [Parameter(Position = 0, Mandatory = $True, ValueFromPipeline = $True)]
         [object]$InputObject,
         [switch]$NoEmpty
     )
      
-    Process
-    {
+    Process {
         #Get propery names.
         $Names = $InputObject | Get-Member -MemberType Properties | Select-Object -ExpandProperty Name;
 
@@ -365,21 +355,19 @@ Function ConvertTo-HashTable
         $Hash = @{};
 
         #Go through the list of names and add each property and value to the hash table.
-        $Names | ForEach-Object {$Hash.Add($_,$InputObject.$_)};
+        $Names | ForEach-Object { $Hash.Add($_, $InputObject.$_) };
 
         #If NoEmpty is set.
-        If ($NoEmpty)
-        {
+        If ($NoEmpty) {
             #Define a new hash.
             $Defined = @{};
 
             #Get items from $hash that have values and add to $Defined.
             $Hash.Keys | ForEach-Object {
                 #If hash item is not empty.
-                If ($Hash.item($_))
-                {
+                If ($Hash.item($_)) {
                     #Add to hashtable.
-                    $Defined.Add(($_,$Hash.Item($_)));
+                    $Defined.Add(($_, $Hash.Item($_)));
                 }
             }
             
@@ -392,13 +380,12 @@ Function ConvertTo-HashTable
     }
 }
 
-Function Test-ScheduleTask
-{
+Function Test-ScheduleTask {
     [CmdletBinding()]
     
     Param
     (
-        [parameter(Mandatory=$true)][string]$Name
+        [parameter(Mandatory = $true)][string]$Name
     )
 
     #Create a new schedule object.
@@ -408,31 +395,28 @@ Function Test-ScheduleTask
     $Schedule.Connect();
 
     #Get schedule tak folders.
-    $Task = $Schedule.GetFolder("\").GetTasks(0) | Where-Object {$_.Name -eq $Name -and $_.Enabled -eq $true};
+    $Task = $Schedule.GetFolder("\").GetTasks(0) | Where-Object { $_.Name -eq $Name -and $_.Enabled -eq $true };
 
     #If the task exists and is enabled.
-    If($Task)
-    {
+    If ($Task) {
         #Return true.
         Return $true;
     }
     #If the task doesn't exist.
-    Else
-    {
+    Else {
         #Return false.
         Return $false;
     }
 }
 
-Function Write-Log
-{
+Function Write-Log {
     [CmdletBinding()]
     
     Param
     (
-        [parameter(Mandatory=$true)][string]$File,
-        [parameter(Mandatory=$true)][string]$Text,
-        [parameter(Mandatory=$true)][string][ValidateSet("Information", "Error", "Warning")]$Status
+        [parameter(Mandatory = $true)][string]$File,
+        [parameter(Mandatory = $true)][string]$Text,
+        [parameter(Mandatory = $true)][string][ValidateSet("Information", "Error", "Warning")]$Status
     )
 
     #Construct output.
@@ -443,13 +427,12 @@ Function Write-Log
     Return Write-Output $Output;
 }
 
-Function Get-LocalGroupMembers
-{
+Function Get-LocalGroupMembers {
     [CmdletBinding()]
     
     Param
     (
-        [parameter(Mandatory=$true)][string]$LocalGroup
+        [parameter(Mandatory = $true)][string]$LocalGroup
     )
 
     #Get local machine name.
@@ -462,14 +445,13 @@ Function Get-LocalGroupMembers
     $Members = $Group.psbase.Invoke("Members");
 
     #Get members of the group.
-    $GroupMembers = $Members | ForEach-Object { $_.GetType().InvokeMember("Name", 'GetProperty', $null, $_, $null)};
+    $GroupMembers = $Members | ForEach-Object { $_.GetType().InvokeMember("Name", 'GetProperty', $null, $_, $null) };
 
     #Return group members.
     Return $GroupMembers;
 }
 
-Function Get-LocalUsers
-{
+Function Get-LocalUsers {
     [CmdletBinding()]
     
     #Get local user accounts.
@@ -479,14 +461,12 @@ Function Get-LocalUsers
     $Accounts = @();
 
     #Foreach local user account.
-    Foreach($LocalUserAccount in $LocalUserAccounts)
-    {
+    Foreach ($LocalUserAccount in $LocalUserAccounts) {
         #Split the SID to get the last octet.
         $SIDSplit = ((($LocalUserAccount.SID -split "-")[-1]).ToString());
 
         #If the SID last octet starts with 1, or is 500.
-        If(($SIDSplit.StartsWith("1")) -or ($SIDSplit -eq "500"))
-        {
+        If (($SIDSplit.StartsWith("1")) -or ($SIDSplit -eq "500")) {
             #Add to the object array.    
             $Accounts += $LocalUserAccount;
         }
@@ -504,16 +484,14 @@ Function Get-LocalUsers
 Write-Log -File $LogFile -Status Information -Text "Starting password reset.";
 
 #Test if the machine have internet connection.
-If(!((Test-InternetConnection -Target $AzureEndpoint).TcpTestSucceeded -eq "true"))
-{
+If (!((Test-InternetConnection -Target $AzureEndpoint).TcpTestSucceeded -eq "true")) {
     #Write out to the log file.
     Write-Log -File $LogFile -Status Error -Text "No internet access.";
 
     #Exit the script with an error.
     Exit 1;
 }
-Else
-{
+Else {
     #Write out to the log file.
     Write-Log -File $LogFile -Status Information -Text "The machine have internet access.";
 }
@@ -532,8 +510,7 @@ Else {
 }
 
 #Check if the schedule task exist.
-If(!(Test-ScheduleTask -Name $ScheduleTaskName))
-{
+If (!(Test-ScheduleTask -Name $ScheduleTaskName)) {
     #Write out to the log file.
     Write-Log -File $LogFile -Status Warning -Text "Schedule task doesn't exist.";
     Write-Log -File $LogFile -Status Information -Text "Creating schedule task.";
@@ -547,8 +524,7 @@ If(!(Test-ScheduleTask -Name $ScheduleTaskName))
     #Remove XML file.
     Remove-Item ($ScheduleTaskName + ".xml");
 }
-Else
-{
+Else {
     #Write out to the log file.
     Write-Log -File $LogFile -Status Warning -Text "Schedule task already exist.";
 }
@@ -560,7 +536,7 @@ Write-Log -File $LogFile -Status Information -Text "Setting encryption key.";
 $EncryptionKey = Set-SecretKey -Key ($SecretKey);
 
 #Get hostname.
-$Hostname = Invoke-Command {hostname};
+$Hostname = Invoke-Command { hostname };
 $Hostname = $Hostname.ToUpper();
 
 
@@ -602,19 +578,16 @@ $Accounts = @();
 $LocalAdministrators = @();
 
 #Foreach local user.
-Foreach($LocalUser in $LocalUsers)
-{
+Foreach ($LocalUser in $LocalUsers) {
     #If the local user is in the group.
-    If($LocalUser | Where-Object {$_.Name -in $LocalGroupUsers})
-    {
+    If ($LocalUser | Where-Object { $_.Name -in $LocalGroupUsers }) {
         #Add user to the object array.
         $LocalAdministrators += $LocalUser;
     }
 }
 
 #Foreach administrator.
-Foreach ($LocalAdministrator in $LocalAdministrators)
-{
+Foreach ($LocalAdministrator in $LocalAdministrators) {
     #Generate GUID.
     $GUID = (New-Guid).Guid;
 
@@ -640,20 +613,21 @@ Foreach ($LocalAdministrator in $LocalAdministrators)
     #Reset the password and change the description.
     $SetLocalUserError = $null
     $NetUserError = $null
-    Try {Set-LocalUser -SID $($LocalAdministrator.SID) -Password $($Password | ConvertTo-SecureString -AsPlainText -Force) -Description ("Managed by " + $CompanyName) -Confirm:$false -ErrorAction Stop;}
+    Try { Set-LocalUser -SID $($LocalAdministrator.SID) -Password $($Password | ConvertTo-SecureString -AsPlainText -Force) -Description ("Managed by " + $CompanyName) -Confirm:$false -ErrorAction Stop; }
     Catch {
         $SetLocalUserError = $_.Exception.Message
         Write-Log -File $LogFile -Status Information -Text ("Error Setting password for '" + ($LocalAdministrator.Name).ToString() + "' via Powershell. Error: $SetLocalUserError. Will attempt with Net User command");    
-        Try {Net User $($LocalAdministrator.Name) $Password}
-        Catch {$NetUserError = $True
+        Try { Net User $($LocalAdministrator.Name) $Password }
+        Catch {
+            $NetUserError = $True
             Write-Log -File $LogFile -Status Information -Text ("Error Setting password for '" + ($LocalAdministrator.Name).ToString() + "' via Net User command Error: $NetUserError. Password Failed even though iLAPS may show a new password ")
         }
     }
-    if(!$SetLocalUserError){
+    if (!$SetLocalUserError) {
         #Write out to the log file.
         Write-Log -File $LogFile -Status Information -Text ("Set password for '" + ($LocalAdministrator.Name).ToString() + "' via PowerShell without Error ");
     }
-    elseif(!$NetUserError){
+    elseif (!$NetUserError) {
         #Write out to the log file.
         Write-Log -File $LogFile -Status Information -Text ("Set password for '" + ($LocalAdministrator.Name).ToString() + "' via Net User command without Error ");
     }
@@ -680,8 +654,7 @@ Foreach ($LocalAdministrator in $LocalAdministrators)
 }
 
 #Foreach account.
-Foreach($Account in $Accounts)
-{
+Foreach ($Account in $Accounts) {
     #Write out to the log file.
     Write-Log -File $LogFile -Status Information -Text ("Uploading data to Azure tables for '" + ($Account.Account).ToString() + "'.");
 

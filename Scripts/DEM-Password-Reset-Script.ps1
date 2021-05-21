@@ -113,7 +113,7 @@ $ScheduleTaskName = "Reset DEM Admin Password Request";
 
 #Log.
 $LogFile = ("C:\Logs\DEM Reset\" + ((Get-Date).ToString("ddMMyyyy") + ".log"));
-New-Item -Path 'C:\Logs\DEM Reset\' -ItemType Directory -ErrorAction Ignore; ;
+New-Item -Path 'C:\Logs\DEM Reset\' -ItemType Directory -ErrorAction Ignore;
 
 <# Input - End #>
 ################################################

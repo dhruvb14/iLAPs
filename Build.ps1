@@ -73,10 +73,10 @@ foreach ($file in $installationFiles) {
             $Content = $Content -replace $item.Name, $item.Value 
         }
     }
-    $Content = $Content -replace '\[parameter\(Mandatory=\$true\)\]\[string\]\$SecretKey', '[parameter(Mandatory=$false)][string]$SecretKey';
-    $Content = $Content -replace '\[parameter\(Mandatory=\$true\)\]\[string\]\$AzureEndpoint', '[parameter(Mandatory=$false)][string]$AzureEndpoint';
-    $Content = $Content -replace '\[parameter\(Mandatory=\$true\)\]\[string\]\$AzureSharedAccessSignature', '[parameter(Mandatory=$false)][string]$AzureSharedAccessSignature';
-    $Content = $Content -replace '\[parameter\(Mandatory=\$true\)\]\[string\]\$AzureTable', '[parameter(Mandatory=$false)][string]$AzureTable';
+    $Content = $Content -replace '\[parameter\(Mandatory = \$true\)\]\[string\]\$SecretKey', '[parameter(Mandatory=$false)][string]$SecretKey';
+    $Content = $Content -replace '\[parameter\(Mandatory = \$true\)\]\[string\]\$AzureEndpoint', '[parameter(Mandatory=$false)][string]$AzureEndpoint';
+    $Content = $Content -replace '\[parameter\(Mandatory = \$true\)\]\[string\]\$AzureSharedAccessSignature', '[parameter(Mandatory=$false)][string]$AzureSharedAccessSignature';
+    $Content = $Content -replace '\[parameter\(Mandatory = \$true\)\]\[string\]\$AzureTable', '[parameter(Mandatory=$false)][string]$AzureTable';
     Write-Log -Text "Save $file With Build Secrets";
     Set-Content $file.PSPath -Value $Content;
 }

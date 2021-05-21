@@ -27,15 +27,15 @@
 Param
 (
     #Encryption key.
-    [parameter(Mandatory=$true)][string]$SecretKey = "Global-Encryption-Key",
+    [parameter(Mandatory = $true)][string]$SecretKey = "Global-Encryption-Key",
     #Azure endpoint.
-    [parameter(Mandatory=$true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
+    [parameter(Mandatory = $true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
     #Azure Shared Access SIgnature.
-    [parameter(Mandatory=$true)][string]$AzureSharedAccessSignature  = 'Table-Object-Read-List-SAS-Token',
+    [parameter(Mandatory = $true)][string]$AzureSharedAccessSignature = 'Table-Object-Read-List-SAS-Token',
     #Azure Storage Table.
-    [parameter(Mandatory=$true)][string]$AzureTable = "Admin-Table-Name",
+    [parameter(Mandatory = $true)][string]$AzureTable = "Admin-Table-Name",
     #Run Script In Debugger Mode
-    [parameter(Mandatory=$false)][bool]$DebugMode = $false
+    [parameter(Mandatory = $false)][bool]$DebugMode = $false
 )
 
 <# Parameters - End #>
@@ -56,42 +56,40 @@ $LogFile = ("C:\Logs\Intune LAPS\" + ((Get-Date).ToString("ddMMyyyy") + ".log"))
 ################################################
 <# Functions - Start #>
 
-Function Test-InternetConnection
-{
+Function Test-InternetConnection {
     [CmdletBinding()]
     
     Param
     (
-        [parameter(Mandatory=$true)][string]$Target
+        [parameter(Mandatory = $true)][string]$Target
     )
 
     #Test the connection to target.
-    $Result = Test-NetConnection -ComputerName ($Target -replace "https://","") -Port 443 -WarningAction SilentlyContinue;
+    $Result = Test-NetConnection -ComputerName ($Target -replace "https://", "") -Port 443 -WarningAction SilentlyContinue;
 
     #Return result.
     Return $Result;
 }
 
 #Get data from Azure tables.
-Function Get-AzureTableData
-{
+Function Get-AzureTableData {
     [CmdletBinding()]
     
     Param
     (
-        [parameter(Mandatory=$true)][string]$Endpoint,
-        [parameter(Mandatory=$true)][string]$SharedAccessSignature,
-        [parameter(Mandatory=$true)][string]$Table
+        [parameter(Mandatory = $true)][string]$Endpoint,
+        [parameter(Mandatory = $true)][string]$SharedAccessSignature,
+        [parameter(Mandatory = $true)][string]$Table
     )
 
     #Create request header.
     $Headers = @{
-        "x-ms-date"=(Get-Date -Format r);
-        "x-ms-version"="2016-05-31";
-        "Accept-Charset"="UTF-8";
-        "DataServiceVersion"="3.0;NetFx";
-        "MaxDataServiceVersion"="3.0;NetFx";
-        "Accept"="application/json;odata=nometadata"
+        "x-ms-date"             = (Get-Date -Format r);
+        "x-ms-version"          = "2016-05-31";
+        "Accept-Charset"        = "UTF-8";
+        "DataServiceVersion"    = "3.0;NetFx";
+        "MaxDataServiceVersion" = "3.0;NetFx";
+        "Accept"                = "application/json;odata=nometadata"
     };
 
     #Construct URI.
@@ -101,12 +99,11 @@ Function Get-AzureTableData
     $Response = Invoke-WebRequest -Method Get -Uri $URI -Headers $Headers -UseBasicParsing;
 
     #Return table data.
-    Return ,($Response.Content | ConvertFrom-Json).Value;
+    Return , ($Response.Content | ConvertFrom-Json).Value;
 }
 
 #Generate a secret key.
-Function Set-SecretKey
-{
+Function Set-SecretKey {
     [CmdletBinding()]
     Param
     (
@@ -117,11 +114,10 @@ Function Set-SecretKey
     $Length = $Key.Length;
     
     #Pad length.
-    $Pad = 32-$Length;
+    $Pad = 32 - $Length;
     
     #If the length is less than 16 or more than 32.
-    If($Length -ne 32)
-    {
+    If ($Length -ne 32) {
         #Throw exception.
         Throw "SecureKey String must be 32 characters";
     }
@@ -137,8 +133,7 @@ Function Set-SecretKey
 }
 
 #Encrypt data with a secret key.
-Function Set-EncryptedData
-{
+Function Set-EncryptedData {
     [CmdletBinding()]
     Param
     (
@@ -153,8 +148,7 @@ Function Set-EncryptedData
     $Chars = $TextInput.ToCharArray();
     
     #Foreach char in the array.
-    ForEach($Char in $Chars)
-    {
+    ForEach ($Char in $Chars) {
         #Append the char to the secure string.
         $SecureString.AppendChar($Char);
     }
@@ -167,8 +161,7 @@ Function Set-EncryptedData
 }
 
 #Decrypt data with a secret key.
-Function Get-EncryptedData
-{
+Function Get-EncryptedData {
     [CmdletBinding()]
     Param
     (
@@ -177,7 +170,7 @@ Function Get-EncryptedData
     )
 
     #Decrypt the text input with the secret key.
-    $Result = $TextInput | ConvertTo-SecureString -key $Key | ForEach-Object {[Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($_))};
+    $Result = $TextInput | ConvertTo-SecureString -key $Key | ForEach-Object { [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($_)) };
 
     #Return the decrypted data.
     Return $Result;
@@ -188,8 +181,7 @@ Function Get-EncryptedData
 <# Main - Start #>
 
 #Test if the machine have internet connection.
-If(!((Test-InternetConnection -Target $AzureEndpoint).TcpTestSucceeded -eq "true"))
-{
+If (!((Test-InternetConnection -Target $AzureEndpoint).TcpTestSucceeded -eq "true")) {
     #Write out to the log file.
     Write-Log -File $LogFile -Status Error -Text "No internet access.";
 
@@ -207,11 +199,9 @@ $Data = Get-AzureTableData -Endpoint $AzureEndpoint -SharedAccessSignature $Azur
 $Accounts = @();
 
 #If there is any data.
-If($Data)
-{
+If ($Data) {
     #Foreach password.
-    Foreach($Account in $Data)
-    {
+    Foreach ($Account in $Data) {
         #Decrypt password.
         $Password = Get-EncryptedData -Key $EncryptionKey -TextInput $Account.Password;
 
@@ -230,8 +220,7 @@ If($Data)
     }
 }
 #If no entries are returned.
-Else
-{
+Else {
     #Create a new object.
     $AccountObject = New-Object -TypeName PSObject;
 

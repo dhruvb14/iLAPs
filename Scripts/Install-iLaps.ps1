@@ -24,7 +24,7 @@
 Param
 (
     #Run Script In Debugger Mode
-    [parameter(Mandatory=$false)][bool]$DebugMode = $false
+    [parameter(Mandatory = $false)][bool]$DebugMode = $false
 )
 ################################################
 <# Bootstrap - Start #>
@@ -48,15 +48,14 @@ $LogFile = ("C:\Logs\Intune LAPS\" + ((Get-Date).ToString("ddMMyyyy") + ".log"))
 ################################################
 <# Functions - Start #>
 
-Function Write-Log
-{
+Function Write-Log {
     [CmdletBinding()]
     
     Param
     (
-        [parameter(Mandatory=$true)][string]$File,
-        [parameter(Mandatory=$true)][string]$Text,
-        [parameter(Mandatory=$true)][string][ValidateSet("Information", "Error", "Warning")]$Status
+        [parameter(Mandatory = $true)][string]$File,
+        [parameter(Mandatory = $true)][string]$Text,
+        [parameter(Mandatory = $true)][string][ValidateSet("Information", "Error", "Warning")]$Status
     )
 
     #Construct output.
@@ -76,7 +75,7 @@ Write-Log -File $LogFile -Status Information -Text "Starting download request.";
 
 #Get temporary location.
 $Path = "C:\Windows\system32";
-If($DebugMode){
+If ($DebugMode) {
     $Path = "C:\dev";
 }
 

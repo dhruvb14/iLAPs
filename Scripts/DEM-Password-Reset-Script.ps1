@@ -27,15 +27,15 @@
 Param
 (
     #Encryption key.
-    [parameter(Mandatory=$true)][string]$SecretKey = "Global-Encryption-Key",
+    [parameter(Mandatory = $true)][string]$SecretKey = "Global-Encryption-Key",
     #Azure endpoint.
-    [parameter(Mandatory=$true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
+    [parameter(Mandatory = $true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
     #Azure Shared Access SIgnature.
-    [parameter(Mandatory=$true)][string]$AzureSharedAccessSignature  = 'Table-Object-Read-Update-SAS-Token',
+    [parameter(Mandatory = $true)][string]$AzureSharedAccessSignature = 'Table-Object-Read-Update-SAS-Token',
     #Azure Storage Table.
-    [parameter(Mandatory=$true)][string]$AzureTable = "DEM-Table-Name",
+    [parameter(Mandatory = $true)][string]$AzureTable = "DEM-Table-Name",
     #Run Script In Debugger Mode
-    [parameter(Mandatory=$false)][bool]$DebugMode = $false
+    [parameter(Mandatory = $false)][bool]$DebugMode = $false
 )
 
 <# Parameters - End #>
@@ -113,13 +113,12 @@ $ScheduleTaskName = "Reset DEM Admin Password Request";
 
 #Log.
 $LogFile = ("C:\Logs\DEM Reset\" + ((Get-Date).ToString("ddMMyyyy") + ".log"));
-New-Item -Path 'C:\Logs\DEM Reset\' -ItemType Directory -ErrorAction Ignore;;
+New-Item -Path 'C:\Logs\DEM Reset\' -ItemType Directory -ErrorAction Ignore;
 
 <# Input - End #>
 ################################################
 <# Functions - Start #>
-Function Set-SecretKey
-{
+Function Set-SecretKey {
     [CmdletBinding()]
     Param
     (
@@ -130,11 +129,10 @@ Function Set-SecretKey
     $Length = $Key.Length;
     
     #Pad length.
-    $Pad = 32-$Length;
+    $Pad = 32 - $Length;
     
     #If the length is less than 16 or more than 32.
-    If($Length -ne 32)
-    {
+    If ($Length -ne 32) {
         #Throw exception.
         Throw "SecureKey String must be 32 characters";
     }
@@ -163,32 +161,31 @@ Function Test-InternetConnection {
     Return $Result;
 }
 
-Function New-Password
-{
-    [CmdletBinding(DefaultParameterSetName='FixedLength',ConfirmImpact='None')]
+Function New-Password {
+    [CmdletBinding(DefaultParameterSetName = 'FixedLength', ConfirmImpact = 'None')]
     [OutputType([String])]
     Param
     (
         # Specifies minimum password length
-        [Parameter(Mandatory=$false,
-                   ParameterSetName='RandomLength')]
-        [ValidateScript({$_ -gt 0})]
+        [Parameter(Mandatory = $false,
+            ParameterSetName = 'RandomLength')]
+        [ValidateScript( { $_ -gt 0 })]
         [Alias('Min')] 
         [int]$MinPasswordLength = 12,
         
         # Specifies maximum password length
-        [Parameter(Mandatory=$false,
-                   ParameterSetName='RandomLength')]
-        [ValidateScript({
-                if($_ -ge $MinPasswordLength){$true}
-                else{Throw 'Max value cannot be lesser than min value.'}})]
+        [Parameter(Mandatory = $false,
+            ParameterSetName = 'RandomLength')]
+        [ValidateScript( {
+                if ($_ -ge $MinPasswordLength) { $true }
+                else { Throw 'Max value cannot be lesser than min value.' } })]
         [Alias('Max')]
         [int]$MaxPasswordLength = 12,
 
         # Specifies a fixed password length
-        [Parameter(Mandatory=$false,
-                   ParameterSetName='FixedLength')]
-        [ValidateRange(1,2147483647)]
+        [Parameter(Mandatory = $false,
+            ParameterSetName = 'FixedLength')]
+        [ValidateRange(1, 2147483647)]
         [int]$PasswordLength = 12,
         
         # Specifies an array of strings containing charactergroups from which the password will be generated.
@@ -200,11 +197,11 @@ Function New-Password
         [String] $FirstChar,
         
         # Specifies number of passwords to generate.
-        [ValidateRange(1,2147483647)]
+        [ValidateRange(1, 2147483647)]
         [int]$Count = 1
     )
     Begin {
-        Function Get-Seed{
+        Function Get-Seed {
             # Generate a seed for randomization
             $RandomBytes = New-Object -TypeName 'System.Byte[]' 4
             $Random = New-Object -TypeName 'System.Security.Cryptography.RNGCryptoServiceProvider'
@@ -213,18 +210,17 @@ Function New-Password
         }
     }
     Process {
-        For($iteration = 1;$iteration -le $Count; $iteration++){
+        For ($iteration = 1; $iteration -le $Count; $iteration++) {
             $Password = @{}
             # Create char arrays containing groups of possible chars
             [char[][]]$CharGroups = $InputStrings
 
             # Create char array containing all chars
-            $AllChars = $CharGroups | ForEach-Object {[Char[]]$_}
+            $AllChars = $CharGroups | ForEach-Object { [Char[]]$_ }
 
             # Set password length
-            if($PSCmdlet.ParameterSetName -eq 'RandomLength')
-            {
-                if($MinPasswordLength -eq $MaxPasswordLength) {
+            if ($PSCmdlet.ParameterSetName -eq 'RandomLength') {
+                if ($MinPasswordLength -eq $MaxPasswordLength) {
                     # If password length is set, use set length
                     $PasswordLength = $MinPasswordLength
                 }
@@ -235,29 +231,29 @@ Function New-Password
             }
 
             # If FirstChar is defined, randomize first char in password from that string.
-            if($PSBoundParameters.ContainsKey('FirstChar')){
-                $Password.Add(0,$FirstChar[((Get-Seed) % $FirstChar.Length)])
+            if ($PSBoundParameters.ContainsKey('FirstChar')) {
+                $Password.Add(0, $FirstChar[((Get-Seed) % $FirstChar.Length)])
             }
             # Randomize one char from each group
-            Foreach($Group in $CharGroups) {
-                if($Password.Count -lt $PasswordLength) {
+            Foreach ($Group in $CharGroups) {
+                if ($Password.Count -lt $PasswordLength) {
                     $Index = Get-Seed
-                    While ($Password.ContainsKey($Index)){
+                    While ($Password.ContainsKey($Index)) {
                         $Index = Get-Seed                        
                     }
-                    $Password.Add($Index,$Group[((Get-Seed) % $Group.Count)])
+                    $Password.Add($Index, $Group[((Get-Seed) % $Group.Count)])
                 }
             }
 
             # Fill out with chars from $AllChars
-            for($i=$Password.Count;$i -lt $PasswordLength;$i++) {
+            for ($i = $Password.Count; $i -lt $PasswordLength; $i++) {
                 $Index = Get-Seed
-                While ($Password.ContainsKey($Index)){
+                While ($Password.ContainsKey($Index)) {
                     $Index = Get-Seed                        
                 }
-                $Password.Add($Index,$AllChars[((Get-Seed) % $AllChars.Count)])
+                $Password.Add($Index, $AllChars[((Get-Seed) % $AllChars.Count)])
             }
-            Write-Output -InputObject $(-join ($Password.GetEnumerator() | Sort-Object -Property Name | Select-Object -ExpandProperty Value))
+            Write-Output -InputObject $( -join ($Password.GetEnumerator() | Sort-Object -Property Name | Select-Object -ExpandProperty Value))
         }
     }
 }
@@ -294,8 +290,7 @@ Function Update-AzureTableData {
     Invoke-WebRequest -Method Put -Uri $URI -Headers $Headers -Body $Body -ContentType "application/json" -UseBasicParsing | Out-Null;
 }
 
-Function Set-EncryptedData
-{
+Function Set-EncryptedData {
     [CmdletBinding()]
     Param
     (
@@ -310,8 +305,7 @@ Function Set-EncryptedData
     $Chars = $TextInput.ToCharArray();
     
     #Foreach char in the array.
-    ForEach($Char in $Chars)
-    {
+    ForEach ($Char in $Chars) {
         #Append the char to the secure string.
         $SecureString.AppendChar($Char);
     }
@@ -437,17 +431,19 @@ Function UpdateAdminPassword {
     #Encrypt password.
     $EncryptionKey = Set-SecretKey -Key ($SecretKey);
     $EncryptedPassword = Set-EncryptedData -Key $EncryptionKey -TextInput $Password;
-    If($DebugMode){
+    If ($DebugMode) {
         Write-Log -File $LogFile -Status Information -Text ("DID NOT EXECUTE COMMAND - Would have Updated Identity $($item.AccountEmailAddress.Split("@")[0]) with Plain Password $($Password)");
-    } else {
+    }
+    else {
         Set-ADAccountPassword -identity "$($item.AccountEmailAddress.Split("@")[0])" -Reset -NewPassword (ConvertTo-SecureString -AsPlainText $Password -Force);
     }
     $item.Password = $EncryptedPassword;
     $item.NeedsReset = $false;
     $item.ScheduledNextChange = (Get-Date).AddMonths(6).ToString("o");
-    If($DebugMode){
+    If ($DebugMode) {
         Write-Log -File $LogFile -Status Information -Text ("DID NOT EXECUTE COMMAND - Would have Updated Azure Table $($AzureTable) with Encrypted Password $($EncryptedPassword) and updated NeedsReset Field to $($item.NeedsReset) and updated ScheduledNextChange field to $($item.ScheduledNextChange)");
-    } else {
+    }
+    else {
         Update-AzureTableData -Endpoint $AzureEndpoint -SharedAccessSignature $AzureSharedAccessSignature -Table $SingleItemLookup -TableData (ConvertTo-HashTable -InputObject $item);
     }
 }
@@ -527,17 +523,18 @@ ForEach ($item in $items.value) {
             If (($item.NeedsReset -Or ($currentDate -gt $ScheduledNextChange)) -Or $DebugMode) {
                 Write-Log -File $LogFile -Status Information -Text ("Password Reset is Required for $($item.AccountEmailAddress) based on Manual Requested Reset by Admin");
                 If (($currentDate -gt $ResetRequestDate -And $item.NeedsReset) -Or $DebugMode) {
-                        Write-Log -File $LogFile -Status Information -Text ("DEM Reset is Requested for after $($item.ResetRequestedDate)");
-                        Write-Log -File $LogFile -Status Information -Text ("Resetting DEM Password for $($item.AccountEmailAddress) at $($currentDate)");
-                        # RUN PASSWORD RESET LOGIC AND UPDATE TABLE
-                        UpdateAdminPassword($item);
+                    Write-Log -File $LogFile -Status Information -Text ("DEM Reset is Requested for after $($item.ResetRequestedDate)");
+                    Write-Log -File $LogFile -Status Information -Text ("Resetting DEM Password for $($item.AccountEmailAddress) at $($currentDate)");
+                    # RUN PASSWORD RESET LOGIC AND UPDATE TABLE
+                    UpdateAdminPassword($item);
                 } 
                 else {
-                    If ($currentDate -gt $ScheduledNextChange){
+                    If ($currentDate -gt $ScheduledNextChange) {
                         Write-Log -File $LogFile -Status Information -Text ("Password Reset is Required for $($item.AccountEmailAddress) based on Automatic Password Reset Policy");
                         # RUN PASSWORD RESET LOGIC AND UPDATE TABLE
                         UpdateAdminPassword($item);
-                    } else {
+                    }
+                    else {
                         Write-Log -File $LogFile -Status Information -Text ("Admin Password will reset after $($item.ResetRequestedDate)");
                     }
                 }
@@ -545,7 +542,7 @@ ForEach ($item in $items.value) {
             else {
                 Write-Log -File $LogFile -Status Information -Text ("DEM Password does not need reset for $($item.EmailAddress)");
             }
-    }
+        }
     }
     else {
         Write-Log -File $LogFile -Status Information -Text ("Admin Password has never been used and does not need reset");

@@ -27,13 +27,13 @@
 Param
 (
     #Azure endpoint.
-    [parameter(Mandatory=$true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
+    [parameter(Mandatory = $true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
     #Azure Shared Access SIgnature.
-    [parameter(Mandatory=$true)][string]$AzureSharedAccessSignature  = 'Table-Object-Read-Update-SAS-Token',
+    [parameter(Mandatory = $true)][string]$AzureSharedAccessSignature = 'Table-Object-Read-Update-SAS-Token',
     #Azure Storage Table.
-    [parameter(Mandatory=$true)][string]$AzureTable = "Reset-Table-Name",
+    [parameter(Mandatory = $true)][string]$AzureTable = "Reset-Table-Name",
     #Run Script In Debugger Mode
-    [parameter(Mandatory=$false)][bool]$DebugMode = $false
+    [parameter(Mandatory = $false)][bool]$DebugMode = $false
 )
 
 <# Parameters - End #>
@@ -351,7 +351,7 @@ Write-Log -File $LogFile -Status Information -Text ("SerialNumber: " + $SerialNu
 
 ## IMPLEMENT LOGIC TO GO RETRIEVE RESET INFORMATION HERE
 $Path = "C:\Windows\system32";
-If($DebugMode){
+If ($DebugMode) {
     $Path = "C:\Dev\iLAPS\Output";
 }
 $Installer = "Reset-LocalAdministratorPassword.ps1";

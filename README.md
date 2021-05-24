@@ -51,59 +51,7 @@ Admin UI Web Application Features:
          "Storage-Account-Name": "PasteValueHere"
       ```
 
-3. Create Shared Access Signature for `Update Admin Script`
-   1. Allowed Services: Table
-   2. Allowed Resource Types: Object
-   3. Allowed Permissions: Add, Create
-   4. Set Start and End Expiration dates
-   5. Allowed Protocols: Https only
-   6. Generate SAS and Connection String
-   7. Save into `settings.production.local.json` field named
-
-      ```json
-         "Table-Object-Add-Create-SAS-Token": "PasteValueHere"
-      ```
-
-4. Create Shared Access Signature for `Request Password Reset Script`
-   1. Allowed Services: Table
-   2. Allowed Resource Types: Object
-   3. Allowed Permissions: Read, Update
-   4. Set Start and End Expiration dates
-   5. Allowed Protocols: Https only
-   6. Generate SAS and Connection String
-   7. Save into `settings.production.local.json` field shown below
-
-      ```json
-         "Table-Object-Read-Update-SAS-Token": "PasteValueHere"
-      ```
-
-5. Create Shared Access Signature for `View Admin Passwords Legacy Powershell Script`
-   1. Allowed Services: Table
-   2. Allowed Resource Types: Object
-   3. Allowed Permissions: Read, List
-   4. Set Start and End Expiration dates
-   5. Allowed Protocols: Https only
-   6. Generate SAS and Connection String
-   7. Save into `settings.production.local.json` field shown below
-
-      ```json
-         "Table-Object-Read-List-SAS-Token": "PasteValueHere"
-      ```
-
-6. Create Shared Access Signature for `Installation Script`
-   1. Allowed Services: Blob
-   2. Allowed Resource Types: Object
-   3. Allowed Permissions: Read
-   4. Set Start and End Expiration dates
-   5. Allowed Protocols: Https only
-   6. Generate SAS and Connection String
-   7. Save into `settings.production.local.json` field shown below
-
-      ```json
-         "Blob-Object-Read-Installer-SAS-Token": "PasteValueHere"
-      ```
-
-7. Create Shared Access Signature for `Admin UI`
+3. Create Shared Access Signature for `Admin UI`
    1. Allowed Services: Table
    2. Allowed Resource Types: Object
    3. Allowed Permissions: Read, Write, List, Add, Create, Update
@@ -113,10 +61,10 @@ Admin UI Web Application Features:
    7. Save into `settings.production.local.json` field shown below
 
       ```json
-         "File-Object-Read-Installer-SAS-Token": "PasteValueHere"
+         "Admin-UI-Table-Object-Read-Write-List-Add-Create-Update-SAS-Token": "PasteValueHere"
       ```
 
-8. Scroll down to `Tables` on side navigation bar:
+4. Scroll down to `Tables` on side navigation bar:
    1. Create Table called `AdminPasswords`
    2. Create Table called `ResetPasswords`
    3. Create Table called `Logs`
@@ -130,27 +78,57 @@ Admin UI Web Application Features:
          "Log-Table-Name": "Logs"
       ```
 
-9. Scroll down to `File Shares` on side navigation bar:
-   1. Create File Share named `installation`
+5. Click `Tables` click the elipsis on `AdminPassword` table
+   1. Select Access Policy
+   2. Click Add Policy
+   3. Name it `Add-Create`
+   4. Permissions `Add` and `Update`
+   5. Set start and end time based on your organzations security policy
+   6. Click Ok
+   7. Create another Policy named `Read` with `Read` Permissions
+   8. Click Ok
+
+6. Click `Tables` click the elipsis on `ResetPasswords` table
+   1. Select Access Policy
+   2. Click Add Policy
+   3. Name it `Read-Update`
+   4. Permissions `Read` and `Update`
+   5. Set start and end time based on your organzations security policy
+
+7. Create Shared Access Signature for `Installation Script`
+   1. Allowed Services: Blob
+   2. Allowed Resource Types: Object
+   3. Allowed Permissions: Read
+   4. Set Start and End Expiration dates
+   5. Allowed Protocols: Https only
+   6. Generate SAS and Connection String
+   7. Save into `settings.production.local.json` field shown below
+
+      ```json
+         "Blob-Object-Read-Installer-SAS-Token": "PasteValueHere"
+      ```
+
+8. Scroll down to `Containers` on side navigation bar:
+   1. Create Container named `installation`
    2. Save into `settings.production.local.json` field shown below
 
       ```json
          "Installer-Container-Name": "installation"
       ```
 
-10. Navigate back to `iLaps-RG` Resource Group
-       1. Click `Add` then search for WebApp
-       2. Name WebApp `iLaps-customername` where customername is your customer's name
-       3. Runtime Stack: `.Net Core 3.1 (LTS)`
-       4. App Service Plan:
-           1. Create New and name it
-           2. Change Size to `S1`
-       5. Click `Review + Create`
-       6. Click `Create`
-       7. Once created naviagte to `TLS/SSL` in new resource
-          1. Turn on the `HTTPS Only` setting
+9. Navigate back to `iLaps-RG` Resource Group
+    1. Click `Add` then search for WebApp
+    2. Name WebApp `iLaps-customername` where customername is your customer's name
+    3. Runtime Stack: `.Net Core 3.1 (LTS)`
+    4. App Service Plan:
+        1. Create New and name it
+        2. Change Size to `S1`
+    5. Click `Review + Create`
+    6. Click `Create`
+    7. Once created naviagte to `TLS/SSL` in new resource
+       1. Turn on the `HTTPS Only` setting
 
-11. Navigate to `Azure Active Directory`
+10. Navigate to `Azure Active Directory`
     1. Click `App Registrations`
     2. Click `New Registration`
     3. Name Application `ILAPS`
@@ -223,7 +201,7 @@ Admin UI Web Application Features:
        3. Click `Users and Groups` and add users who should have access to this application.
           1. Add Role based on if the User is a `User`, `DEM` or a `Super User`. `DEM` has ability to ONLY SEE the DEM tab. `Super Users` have the ability to view DEM Tab, passwords without forcing a reset automatically and view access logs
 
-12. Open `settings.production.local.json` and change set the following settings based on if you are targeting `US Gov Cloud` or `US Commercial Cloud` and your `Customers Name`
+11. Open `settings.production.local.json` and change set the following settings based on if you are targeting `US Gov Cloud` or `US Commercial Cloud` and your `Customers Name`
     1. US Gov Cloud
 
          ```json
@@ -242,7 +220,7 @@ Admin UI Web Application Features:
             "Admin-UI-GraphApiUrl" : "https://graph.microsoft.com/beta"
          ```
 
-13. If you will be using the DEM Management feature, Please Configure your DEMAdminGroups and DEMSuperAdminGroup. Below is an example how to add multiple to each group. DEMAdminGroups can see DEMAccounts Associate to them and DEMSuperAdmin can see all DEM Accounts. **IF NOT USING DEM ACCOUNT FEATURE PLEASE CLEAR THE FIELDS LIKE SHOWN IN EXAMPLE 2**
+12. If you will be using the DEM Management feature, Please Configure your DEMAdminGroups and DEMSuperAdminGroup. Below is an example how to add multiple to each group. DEMAdminGroups can see DEMAccounts Associate to them and DEMSuperAdmin can see all DEM Accounts. **IF NOT USING DEM ACCOUNT FEATURE PLEASE CLEAR THE FIELDS LIKE SHOWN IN EXAMPLE 2**
     1. Configure DEM Admins **(if configured please read last step to finish configuration)**
 
          ```json
@@ -256,6 +234,40 @@ Admin UI Web Application Features:
             "Admin-UI-DEMAdminGroups" : "",
             "Admin-UI-DEMSuperAdminGroups" : "",
          ```
+
+13. Open `Azure Storage Explorer`
+    1. Login to Azure and find the storage account we just created
+    2. Open the `Tables` section
+    3. Right Click `AdminPasswords` table
+        1. Click `Get Shared Access Signature...`
+        2. Click `Access Policy` and select `Add-Create`
+        3. Click Create
+        4. Copy the `Query String`
+            1. Save into `settings.production.local.json` field named
+
+                ```json
+                   "Table-Object-Add-Create-SAS-Token": "PasteValueHere"
+                ```
+
+        5. Click `Back` and change the `Access Policy` to `Read`
+        6. Click Next
+        7. Copy the `Query String`
+            1. Save into `settings.production.local.json` field named
+
+                ```json
+                   "Table-Object-Read-List-SAS-Token": "PasteValueHere"
+                ```
+
+    4. Right Click `Reset Passwords` table
+        1. Click `Get Shared Access Signature...`
+        2. Click `Access Policy` and select `Read-Update`
+        3. Click Create
+        4. Copy the `Query String`
+            1. Save into `settings.production.local.json` field named
+
+               ```json
+                  "Table-Object-Read-Update-SAS-Token": "PasteValueHere"
+               ```
 
 14. Ensure you have .NET Core 3.1 SDK installed
     1. Open Powershell window and navigate to `c:\dev\iLAPs`

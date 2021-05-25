@@ -26,6 +26,12 @@
     
 Param
 (
+    <#
+     DO NOT MODIFY SECRETS INLINE BELOW
+     Follow ReadMe.md and use Build.ps1 
+     With a proper settings file to build
+     The script properly.
+    #>
     #Encryption key.
     [parameter(Mandatory = $true)][string]$SecretKey = "Global-Encryption-Key",
     #Azure endpoint.

@@ -4,6 +4,7 @@
     "Table-Object-Add-Create-SAS-Token": "PasteValueHere",
     "Global-Encryption-Key": "32 Character Encryption Key",
     "Table-Object-Read-Update-SAS-Token": "PasteValueHere",
+    "DEM-Table-Object-Read-Update-SAS-Token": "PasteValueHere",
     "Table-Object-Read-List-SAS-Token": "PasteValueHere",
     "Reset-Table-Name": "ResetPasswords",
     "Storage-Account-Name":"PasteValueHere",

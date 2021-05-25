@@ -94,8 +94,14 @@ Admin UI Web Application Features:
    3. Name it `Read-Update`
    4. Permissions `Read` and `Update`
    5. Set start and end time based on your organzations security policy
+7. Click `Tables` click the elipsis on `DEMPasswords` table
+   1. Select Access Policy
+   2. Click Add Policy
+   3. Name it `Read-Update`
+   4. Permissions `Read` and `Update`
+   5. Set start and end time based on your organzations security policy
 
-7. Create Shared Access Signature for `Installation Script`
+8. Create Shared Access Signature for `Installation Script`
    1. Allowed Services: Blob
    2. Allowed Resource Types: Object
    3. Allowed Permissions: Read
@@ -108,7 +114,7 @@ Admin UI Web Application Features:
          "Blob-Object-Read-Installer-SAS-Token": "PasteValueHere"
       ```
 
-8. Scroll down to `Containers` on side navigation bar:
+9. Scroll down to `Containers` on side navigation bar:
    1. Create Container named `installation`
    2. Save into `settings.production.local.json` field shown below
 
@@ -116,7 +122,7 @@ Admin UI Web Application Features:
          "Installer-Container-Name": "installation"
       ```
 
-9. Navigate back to `iLaps-RG` Resource Group
+10. Navigate back to `iLaps-RG` Resource Group
     1. Click `Add` then search for WebApp
     2. Name WebApp `iLaps-customername` where customername is your customer's name
     3. Runtime Stack: `.Net Core 3.1 (LTS)`
@@ -128,7 +134,7 @@ Admin UI Web Application Features:
     7. Once created naviagte to `TLS/SSL` in new resource
        1. Turn on the `HTTPS Only` setting
 
-10. Navigate to `Azure Active Directory`
+11. Navigate to `Azure Active Directory`
     1. Click `App Registrations`
     2. Click `New Registration`
     3. Name Application `ILAPS`
@@ -207,7 +213,7 @@ Admin UI Web Application Features:
         3. Click `Users and Groups` and add users who should have access to this application.
            1. Add Role based on if the User is a `User`, `DEM` or a `Super User`. `DEM` has ability to ONLY SEE the DEM tab. `Super Users` have the ability to view DEM Tab, passwords without forcing a reset automatically and view access logs
 
-11. Open `settings.production.local.json` and change set the following settings based on if you are targeting `US Gov Cloud` or `US Commercial Cloud` and your `Customers Name`
+12. Open `settings.production.local.json` and change set the following settings based on if you are targeting `US Gov Cloud` or `US Commercial Cloud` and your `Customers Name`
     1. US Gov Cloud
 
          ```json
@@ -226,7 +232,7 @@ Admin UI Web Application Features:
             "Admin-UI-GraphApiUrl" : "https://graph.microsoft.com/beta"
          ```
 
-12. If you will be using the DEM Management feature, Please Configure your DEMAdminGroups and DEMSuperAdminGroup. Below is an example how to add multiple to each group. DEMAdminGroups can see DEMAccounts Associate to them and DEMSuperAdmin can see all DEM Accounts. **IF NOT USING DEM ACCOUNT FEATURE PLEASE CLEAR THE FIELDS LIKE SHOWN IN EXAMPLE 2**
+13. If you will be using the DEM Management feature, Please Configure your DEMAdminGroups and DEMSuperAdminGroup. Below is an example how to add multiple to each group. DEMAdminGroups can see DEMAccounts Associate to them and DEMSuperAdmin can see all DEM Accounts. **IF NOT USING DEM ACCOUNT FEATURE PLEASE CLEAR THE FIELDS LIKE SHOWN IN EXAMPLE 2**
     1. Configure DEM Admins **(if configured please read last step to finish configuration)**
 
          ```json
@@ -241,7 +247,7 @@ Admin UI Web Application Features:
             "Admin-UI-DEMSuperAdminGroups" : "",
          ```
 
-13. Open `Azure Storage Explorer`
+14. Open `Azure Storage Explorer`
     1. Login to Azure and find the storage account we just created
     2. Open the `Tables` section
     3. Right Click `AdminPasswords` table
@@ -264,7 +270,7 @@ Admin UI Web Application Features:
                    "Table-Object-Read-List-SAS-Token": "PasteValueHere"
                 ```
 
-    4. Right Click `Reset Passwords` table
+    4. Right Click `ResetPasswords` table
         1. Click `Get Shared Access Signature...`
         2. Click `Access Policy` and select `Read-Update`
         3. Click Create
@@ -275,14 +281,25 @@ Admin UI Web Application Features:
                   "Table-Object-Read-Update-SAS-Token": "PasteValueHere"
                ```
 
-14. Ensure you have .NET Core 3.1 SDK installed
+    5. Right Click `DEMPasswords` table
+        1. Click `Get Shared Access Signature...`
+        2. Click `Access Policy` and select `Read-Update`
+        3. Click Create
+        4. Copy the `Query String`
+            1. Save into `settings.production.local.json` field named
+
+               ```json
+                  "DEM-Table-Object-Read-Update-SAS-Token": "PasteValueHere"
+               ```
+
+15. Ensure you have .NET Core 3.1 SDK installed
     1. Open Powershell window and navigate to `c:\dev\iLAPs`
     2. run `.\Build.ps1`
 
-15. Open `c:\dev\iLAPs\Output\app-service-advanced-editor-script.json`
+16. Open `c:\dev\iLAPs\Output\app-service-advanced-editor-script.json`
     1. Select all text and copy
 
-16. Navigate to `iLaps-RG` in the portal
+17. Navigate to `iLaps-RG` in the portal
     1. Click `ilaps` App Service
     2. Click `Configuration`
         1. Click `Advanced Edit`
@@ -293,7 +310,7 @@ Admin UI Web Application Features:
         2. Hover over `Tools` then click `Zip Push Deploy`
         3. Open `c:\dev\iLAPs\Output\` in File Explorer
         4. Drag `AdminUI.zip` to Zip Deploy Interface (You will see it turn blue)
-17. Navigate back to `iLaps-RG` Resource Group
+18. Navigate back to `iLaps-RG` Resource Group
     1. Click `ilapscustomername` storage account
     2. Click `File Shares`
     3. Click `installation`
@@ -301,9 +318,9 @@ Admin UI Web Application Features:
        1. Navigate to `c:\dev\iLAPs\Output`
        2. Click both `Reset-LocalAdministratorPassword_v2.0.ps1` and `Check-Reset-LocalAdministratorPassword_v2.0.ps1`
        3. Click `Upload`
-18. Navigate to [Use PowerShell scripts on Windows 10 devices in Intune](https://docs.microsoft.com/en-us/mem/intune/apps/intune-management-extension)
+19. Navigate to [Use PowerShell scripts on Windows 10 devices in Intune](https://docs.microsoft.com/en-us/mem/intune/apps/intune-management-extension)
     1. Deploy the code found in `c:\dev\iLAPs\Output\Install-iLaps_v2.0.ps1` using the guide linked above
-19. If using DEM feature complete this step. Otherwise ENJOY!
+20. If using DEM feature complete this step. Otherwise ENJOY!
     1. Install and connect to storage account using storage explorer
     2. Fill out the `DEMPasswords - Import Template.csv` script and hash the password using the hashing script in the Output directory.
     3. The hashing script takes a string input and returns a hashed output. You can automate the script further on your own but this is provided as a starting point. Example Usage : `.\Output\SaltDEMPasswords.ps1 -PW "MyCrazySuperSecretPassword123!@#"`

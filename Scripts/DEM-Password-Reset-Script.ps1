@@ -37,7 +37,7 @@ Param
     #Azure endpoint.
     [parameter(Mandatory = $true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
     #Azure Shared Access SIgnature.
-    [parameter(Mandatory = $true)][string]$AzureSharedAccessSignature = 'Table-Object-Read-Update-SAS-Token',
+    [parameter(Mandatory = $true)][string]$AzureSharedAccessSignature = 'DEM-Table-Object-Read-Update-SAS-Token',
     #Azure Storage Table.
     [parameter(Mandatory = $true)][string]$AzureTable = "DEM-Table-Name",
     #Run Script In Debugger Mode

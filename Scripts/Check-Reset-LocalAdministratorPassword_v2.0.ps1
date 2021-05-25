@@ -26,6 +26,12 @@
     
 Param
 (
+    <#
+     DO NOT MODIFY SECRETS INLINE BELOW
+     Follow ReadMe.md and use Build.ps1 
+     With a proper settings file to build
+     The script properly.
+    #>
     #Azure endpoint.
     [parameter(Mandatory = $true)][string]$AzureEndpoint = 'https://Storage-Account-Name.table.Storage-Account-Suffix',
     #Azure Shared Access SIgnature.

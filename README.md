@@ -195,11 +195,17 @@ Admin UI Web Application Features:
             "Admin-UI-ClientSecret":"App-Registration-Client-Secret",
          ```
 
-    9. Click `Overview` and in the top header click the link next to `Managed application in local directory`
-       1. Click `Properties`
-       2. Toggle `User Assignment required` to `Yes`
-       3. Click `Users and Groups` and add users who should have access to this application.
-          1. Add Role based on if the User is a `User`, `DEM` or a `Super User`. `DEM` has ability to ONLY SEE the DEM tab. `Super Users` have the ability to view DEM Tab, passwords without forcing a reset automatically and view access logs
+    9. Click `API Permissions`
+       1. Click `Add a Permission`
+       2. Click `Microsoft Graph`
+           1. Search and add `Group.Read.All` and `User.Read`
+           2. Click `Add Permission`
+           3. Get admin permissions granted for `Group.Read.All` (You need this or application could fail to work properly)
+    10. Click `Overview` and in the top header click the link next to `Managed application in local directory`
+        1. Click `Properties`
+        2. Toggle `User Assignment required` to `Yes`
+        3. Click `Users and Groups` and add users who should have access to this application.
+           1. Add Role based on if the User is a `User`, `DEM` or a `Super User`. `DEM` has ability to ONLY SEE the DEM tab. `Super Users` have the ability to view DEM Tab, passwords without forcing a reset automatically and view access logs
 
 11. Open `settings.production.local.json` and change set the following settings based on if you are targeting `US Gov Cloud` or `US Commercial Cloud` and your `Customers Name`
     1. US Gov Cloud
@@ -293,10 +299,10 @@ Admin UI Web Application Features:
     3. Click `installation`
     4. Click `Upload`
        1. Navigate to `c:\dev\iLAPs\Output`
-       2. Click both `Reset-LocalAdministratorPassword.ps1` and `Check-Reset-LocalAdministratorPassword.ps1`
+       2. Click both `Reset-LocalAdministratorPassword_v2.0.ps1` and `Check-Reset-LocalAdministratorPassword_v2.0.ps1`
        3. Click `Upload`
 18. Navigate to [Use PowerShell scripts on Windows 10 devices in Intune](https://docs.microsoft.com/en-us/mem/intune/apps/intune-management-extension)
-    1. Deploy the code found in `c:\dev\iLAPs\Output\Install-iLaps.ps1` using the guide linked above
+    1. Deploy the code found in `c:\dev\iLAPs\Output\Install-iLaps_v2.0.ps1` using the guide linked above
 19. If using DEM feature complete this step. Otherwise ENJOY!
     1. Install and connect to storage account using storage explorer
     2. Fill out the `DEMPasswords - Import Template.csv` script and hash the password using the hashing script in the Output directory.

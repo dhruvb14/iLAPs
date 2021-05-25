@@ -541,12 +541,12 @@ ForEach ($item in $items.value) {
                         UpdateAdminPassword($item);
                     }
                     else {
-                        Write-Log -File $LogFile -Status Information -Text ("Admin Password will reset after $($item.ResetRequestedDate)");
+                        Write-Log -File $LogFile -Status Information -Text ("Admin Password will for $($item.AccountEmailAddress) will reset after $($item.ResetRequestedDate)");
                     }
                 }
             }
             else {
-                Write-Log -File $LogFile -Status Information -Text ("DEM Password does not need reset for $($item.EmailAddress)");
+                Write-Log -File $LogFile -Status Information -Text ("DEM Password does not need reset for $($item.AccountEmailAddress) until $($item.ResetRequestedDate)");
             }
         }
     }

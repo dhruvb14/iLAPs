@@ -10,7 +10,7 @@ namespace IntuneLAPsAdmin.Models
     {
         public string NextPartitionKey { get; set; }
         public string NextRowKey { get; set; }
-        public DateTime PasswordResetDate { get; set; }
+        public DateTimeOffset PasswordResetDate { get; set; }
         public string OriginalHostName { get; set; }
         public string OriginalUserName { get; set; }
     }

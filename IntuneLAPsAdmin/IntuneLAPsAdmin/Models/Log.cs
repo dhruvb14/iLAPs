@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Azure.Cosmos.Table;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace IntuneLAPsAdmin.Models
     {
         public List<Log> value { get; set; }
     }
-    public class Log
+    public class Log: TableEntity
     {
         public string Username { get; set; }
         public string Hostname { get; set; }

@@ -9,7 +9,9 @@ using System;
 using System.Globalization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-
+using Microsoft.Azure.Cosmos.Table;
+using Microsoft.Azure.Cosmos.Table.Queryable;
+using System.Collections.Generic;
 
 namespace IntuneLAPsAdmin.Data
 {
@@ -21,6 +23,7 @@ namespace IntuneLAPsAdmin.Data
         protected readonly ILoggerDataService log;
         protected readonly DecryptStringData helper;
         private IHttpContextAccessor _contextAccessor;
+        private CloudTableClient _storage;
 
         public LAPSDataService(IOptions<AppSettings> settings, IRestClient rest, IToaster toaster, IHttpContextAccessor contextAccessor, ILoggerDataService logger)
         {
@@ -30,8 +33,50 @@ namespace IntuneLAPsAdmin.Data
             helper = new DecryptStringData();
             _contextAccessor = contextAccessor;
             log = logger;
+            _storage = Storage.CreateStorageAccountFromConnectionString(_settings.Value.StorageConnectionString).CreateCloudTableClient();
         }
-        public async Task<AdminPasswords> GetAsync(string HostNameFilter, string AccountNameFilter)
+        public async Task<TableQuerySegment<AdminPasswordsResults>> GetAdminPasswords(string HostNameFilter, string AccountNameFilter, TableContinuationToken token = null)
+        {
+            CloudTable table = _storage.GetTableReference("AdminPasswords");
+            HostNameFilter = HostNameFilter.HostnameUpdate();
+            IQueryable<AdminPasswordsResults> query;
+            try
+            {
+                var LogMessage = $"Perform Search for Hostname: {HostNameFilter}";
+                if (!string.IsNullOrEmpty(AccountNameFilter))
+                {
+                    query = table.CreateQuery<AdminPasswordsResults>()
+                    .Where(x => x.Hostname == HostNameFilter && x.Account == AccountNameFilter);
+                    LogMessage += $" and Account Name: {AccountNameFilter}";
+                }
+                else
+                {
+                    query = table.CreateQuery<AdminPasswordsResults>().Where(x => x.Hostname == HostNameFilter);
+                }
+                log.UpdateAccessLogs(LoggingAction.SearchForMachine, LogMessage, HostNameFilter);
+                //query = table.CreateQuery<AdminPasswordsResults>().Where(x => x.Hostname == HostNameFilter);
+                //TableQuery<AdminPasswordsResults> test2 = table.CreateQuery<AdminPasswordsResults>().Select(y=>y);
+                //var results = query.ToList();
+                //CloudTable table2 = _storage.GetTableReference("Logs");
+                //TableQuery<Log> query2 = table2.CreateQuery<Log>();
+                ////var results2 = query2.ToList();
+
+
+                //var a = await table2.ExecuteQuerySegmentedAsync(query2, null);
+                TableQuerySegment<AdminPasswordsResults> results = await table.ExecuteQuerySegmentedAsync(TableQueryableExtensions.AsTableQuery(query.Take(1)), token);
+                while(results.ContinuationToken != null)
+                {
+                    results = await GetAdditionalResultsAsync(HostNameFilter, AccountNameFilter, results.Results, results.ContinuationToken);
+                }
+                return results;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+        public async Task<AdminPasswords> GetAsyncLegacy(string HostNameFilter, string AccountNameFilter)
         {
             string SerialNumber = null;
             HostNameFilter = HostNameFilter.HostnameUpdate();
@@ -45,37 +90,51 @@ namespace IntuneLAPsAdmin.Data
             Url += "&$top=100";
             log.UpdateAccessLogs(LoggingAction.SearchForMachine, LogMessage, HostNameFilter);
             var results = await http.GetAdminJsonAsync<AdminPasswords>(Url);
-            if (results.value.Count() == 0)
+            while (!string.IsNullOrEmpty(results.NextPartitionKey) && !string.IsNullOrEmpty(results.NextRowKey))
+            {
+                results = await GetAdditionalResultsAsync(HostNameFilter, AccountNameFilter, results);
+            }
+            return results;
+        }
+        public async Task<AdminPasswords> GetAsync(string HostNameFilter, string AccountNameFilter)
+        {
+            var LegacyResults = await GetAsyncLegacy(HostNameFilter, AccountNameFilter);
+            var TableResults = await GetAdminPasswords(HostNameFilter, AccountNameFilter, null);
+            string SerialNumber = null;
+            HostNameFilter = HostNameFilter.HostnameUpdate();
+            var Results = new AdminPasswords();
+            Results.value = TableResults.Results;
+            if (Results.value.Count() == 0)
             {
                 _toaster.Error($"The Machine you are requesting could not be found.");
             }
             else
             {
-                SerialNumber = results.value.FirstOrDefault().SerialNumber;
+                SerialNumber = Results.value.FirstOrDefault().SerialNumber;
             }
 
-            while (!string.IsNullOrEmpty(results.NextPartitionKey) && !string.IsNullOrEmpty(results.NextRowKey))
-            {
-                results = await GetAdditionalResultsAsync(HostNameFilter, AccountNameFilter, results);
-            }
+            //while (!string.IsNullOrEmpty(results.NextPartitionKey) && !string.IsNullOrEmpty(results.NextRowKey))
+            //{
+            //    results = await GetAdditionalResultsAsync(HostNameFilter, AccountNameFilter, results);
+            //}
             // Add next password change information if Reset Password was triggered. Otherwise fallback to next scheduled auto change
             if (!string.IsNullOrEmpty(SerialNumber))
             {
 
-                Url = $"(PartitionKey='{HostNameFilter}',RowKey='{SerialNumber}')?";
+                var Url = $"(PartitionKey='{HostNameFilter}',RowKey='{SerialNumber}')?";
 
                 var result = await http.GetResetJsonAsync<ResetPassword>(Url, true);
                 if (result != null)
                 {
                     if (result.NeedsReset)
                     {
-                        results.PasswordResetDate = DateTime.Parse(result.ResetRequestedDate);
-                        return results;
+                        Results.PasswordResetDate = DateTime.Parse(result.ResetRequestedDate);
+                        return Results;
                     }
                 }
             }
-            results.PasswordResetDate = results.value.OrderByDescending(x => x.PasswordChanged).FirstOrDefault().PasswordNextChange;
-            return results;
+            Results.PasswordResetDate = Results.value.OrderByDescending(x => x.PasswordChanged).FirstOrDefault().PasswordNextChange;
+            return Results;
         }
         public async Task<AdminPasswords> GetAdditionalResultsAsync(string HostNameFilter, string AccountNameFilter, AdminPasswords currentViewModel)
         {
@@ -99,6 +158,12 @@ namespace IntuneLAPsAdmin.Data
             currentViewModel.NextPartitionKey = results.NextPartitionKey;
             currentViewModel.NextRowKey = results.NextRowKey;
             return currentViewModel;
+        }
+        public async Task<TableQuerySegment<AdminPasswordsResults>> GetAdditionalResultsAsync(string HostNameFilter, string AccountNameFilter, List<AdminPasswordsResults> currentViewModel, TableContinuationToken token)
+        {
+            var results = await GetAdminPasswords(HostNameFilter, AccountNameFilter, token);
+            results.Results.AddRange(currentViewModel);
+            return results;
         }
         public async Task<AdminPasswordsResults> DecryptPassword(AdminPasswordsResults currentViewModel)
         {

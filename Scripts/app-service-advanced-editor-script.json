@@ -98,4 +98,9 @@
   "name": "AppSettings:LogTable",
   "value": "Log-Table-Name",
   "slotSetting": false
+},
+{
+  "name": "AppSettings:StorageConnectionString",
+  "value": "Admin-UI-Storage-Connection-String",
+  "slotSetting": false
 }

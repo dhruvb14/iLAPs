@@ -31,5 +31,8 @@ namespace IntuneLAPsAdmin.Models
         public string DEMSuperAdminGroups { get; set; }
         [JsonProperty("DEMPasswordTable")]
         public string DEMPasswordTable { get; set; }
+        [JsonProperty("StorageConnectionString")]
+        public string StorageConnectionString { get; set; }
+        
     }
 }

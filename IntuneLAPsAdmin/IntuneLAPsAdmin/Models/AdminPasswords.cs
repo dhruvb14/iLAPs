@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 namespace IntuneLAPsAdmin.Models
 {
     using System;
+    using Microsoft.Azure.Cosmos.Table;
     using Newtonsoft.Json;
     public class AdminPasswords : TableStorageBaseModel
     {
         public List<AdminPasswordsResults> value { get; set; }
     }
-    public class AdminPasswordsResults
+    public class AdminPasswordsResults : TableEntity
     {
         [JsonProperty("PartitionKey")]
         public Guid PartitionKey { get; set; }

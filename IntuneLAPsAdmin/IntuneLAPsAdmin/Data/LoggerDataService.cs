@@ -9,7 +9,8 @@ using System;
 using System.Globalization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-
+using Microsoft.Azure.Cosmos.Table;
+using Microsoft.Azure.Cosmos.Table.Queryable;
 
 namespace IntuneLAPsAdmin.Data
 {
@@ -20,6 +21,7 @@ namespace IntuneLAPsAdmin.Data
         protected readonly IRestClient http;
         protected readonly DecryptStringData helper;
         private IHttpContextAccessor _contextAccessor;
+        private CloudTableClient _storage;
 
         public LoggerDataService(IOptions<AppSettings> settings, IRestClient rest, IToaster toaster, IHttpContextAccessor contextAccessor)
         {
@@ -28,6 +30,8 @@ namespace IntuneLAPsAdmin.Data
             http = rest;
             helper = new DecryptStringData();
             _contextAccessor = contextAccessor;
+            _storage = Storage.CreateStorageAccountFromConnectionString(_settings.Value.StorageConnectionString).CreateCloudTableClient();
+
         }
         public void UpdateAccessLogs(string InputAction, string InputQuery, string InputHostname = "N/A")
         {

@@ -1,25 +1,26 @@
 {
-    "AzureAd": {
-      "Instance": "Admin-UI-Instance",
-      "Domain": "Admin-UI-Domain",
-      "TenantId": "Admin-UI-TenantId",
-      "ClientId": "Admin-UI-ClientId",
-      "CallbackPath": "/signin-oidc",
-      "SignedOutCallbackPath ": "/signout-callback-oidc",
-      "ClientSecret": "Admin-UI-ClientSecret"
-},
-    "AppSettings": {
-      "ApiUrl": "https://Storage-Account-Name.table.Storage-Account-Suffix/",
-      "SASToken": "Admin-UI-Table-Object-Read-Write-List-Add-Create-Update-SAS-Token",
-      "AzureTable": "Admin-Table-Name",
-      "PasswordResetTable": "Reset-Table-Name",
-      "DEMPasswordTable": "DEM-Table-Name",
-      "LogTable": "Log-Table-Name",
-      "SecretKey": "Global-Encryption-Key",
-      "MachineNamePrefix":"Admin-UI-MachineNamePrefix",
-      "AutomaticPasswordResetInHours": "Admin-UI-AutomaticPasswordResetInHours",
-      "DEMAdminGroups": "Admin-UI-DEMAdminGroups",
-      "DEMSuperAdminGroups": "Admin-UI-DEMSuperAdminGroups"
-    },
-    "GraphApiUrl": "Admin-UI-GraphApiUrl"
-  }
+  "AzureAd": {
+    "Instance": "Admin-UI-Instance",
+    "Domain": "Admin-UI-Domain",
+    "TenantId": "Admin-UI-TenantId",
+    "ClientId": "Admin-UI-ClientId",
+    "CallbackPath": "/signin-oidc",
+    "SignedOutCallbackPath ": "/signout-callback-oidc",
+    "ClientSecret": "Admin-UI-ClientSecret"
+  },
+  "AppSettings": {
+    "ApiUrl": "https://Storage-Account-Name.table.Storage-Account-Suffix/",
+    "SASToken": "Admin-UI-Table-Object-Read-Write-List-Add-Create-Update-SAS-Token",
+    "AzureTable": "Admin-Table-Name",
+    "PasswordResetTable": "Reset-Table-Name",
+    "DEMPasswordTable": "DEM-Table-Name",
+    "LogTable": "Log-Table-Name",
+    "SecretKey": "Global-Encryption-Key",
+    "MachineNamePrefix": "Admin-UI-MachineNamePrefix",
+    "AutomaticPasswordResetInHours": "Admin-UI-AutomaticPasswordResetInHours",
+    "DEMAdminGroups": "Admin-UI-DEMAdminGroups",
+    "DEMSuperAdminGroups": "Admin-UI-DEMSuperAdminGroups",
+    "StorageConnectionString": "Admin-UI-Storage-Connection-String"
+  },
+  "GraphApiUrl": "Admin-UI-GraphApiUrl"
+}

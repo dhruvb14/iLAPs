@@ -82,8 +82,8 @@ foreach ($file in $installationFiles) {
 }
 If ($BuildAppSettingsLocal) {
     Write-Log -Text "Copy appsettings.Local.json to Admin Blazor Application";
-    Remove-Item './IntuneLAPsAdmin/IntuneLAPsAdmin/appsettings.Local.json' -Force -ErrorAction Ignore;
-    Copy-Item "./Output/admin-appsettings-local.json" -Destination './IntuneLAPsAdmin/IntuneLAPsAdmin/appsettings.Local.json';
+    Remove-Item './IntuneLAPsAdmin/IntuneLAPsAdmin/appsettings.local.json' -Force -ErrorAction Ignore;
+    Copy-Item "./Output/admin-appsettings-local.json" -Destination './IntuneLAPsAdmin/IntuneLAPsAdmin/appsettings.local.json';
 }
 
 

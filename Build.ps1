@@ -89,7 +89,7 @@ If ($BuildAppSettingsLocal) {
 
 If ($BuildAdminInterfaceOnly) {
     Write-Log -Text "Building Admin Blazor Application for Debugging in VSCode";
-    $process = Start-Process dotnet.exe -ArgumentList "build .\IntuneLAPsAdmin\IntuneLAPsAdmin.sln -c Debug" -NoNewWindow -PassThru -Wait;
+    $process = Start-Process dotnet -ArgumentList "build .\IntuneLAPsAdmin\IntuneLAPsAdmin.sln -c Debug" -NoNewWindow -PassThru -Wait;
     if ($process.ExitCode -eq 0) {
         Write-Log -Text "Finished Building Admin Blazor Application";
         Exit 0;
@@ -97,7 +97,7 @@ If ($BuildAdminInterfaceOnly) {
 }
 else {
     Write-Log -Text "Building Admin Blazor Application for Publishing";
-    $process = Start-Process dotnet.exe -ArgumentList "publish .\IntuneLAPsAdmin\IntuneLAPsAdmin.sln --output .\Output\Admin -c Release -r win-x86" -NoNewWindow -PassThru -Wait;
+    $process = Start-Process dotnet -ArgumentList "publish .\IntuneLAPsAdmin\IntuneLAPsAdmin.sln --output .\Output\Admin -c Release -r win-x86" -NoNewWindow -PassThru -Wait;
     if ($process.ExitCode -eq 0) {
         Write-Log -Text "Zip Admin Blazor Application for Zip Deploy";
         Compress-Archive -Path ".\Output\Admin\*" -DestinationPath ".\Output\AdminUI.zip"

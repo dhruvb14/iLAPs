@@ -312,7 +312,7 @@ Admin UI Web Application Features:
         4. Drag `AdminUI.zip` to Zip Deploy Interface (You will see it turn blue)
 18. Navigate back to `iLaps-RG` Resource Group
     1. Click `ilapscustomername` storage account
-    2. Click `File Shares`
+    2. Click `Containers`
     3. Click `installation`
     4. Click `Upload`
        1. Navigate to `c:\dev\iLAPs\Output`

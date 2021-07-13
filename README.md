@@ -147,6 +147,7 @@ Admin UI Web Application Features:
              1. `https://ilaps-customername.azurewebsites.com/signin-oidc`
        3. Add another url for development purposes `https://localhost:5001/signin-oidc`
        4. Click `Configure`
+       5. Check `ID Tokens` under `Implicit Grant and Hybrid Flows`
     5. Navigate to Manifest and replace line 8 which contains `appRoles` with the following
 
          ```json

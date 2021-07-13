@@ -321,6 +321,7 @@ Admin UI Web Application Features:
        3. Click `Upload`
 19. Navigate to [Use PowerShell scripts on Windows 10 devices in Intune](https://docs.microsoft.com/en-us/mem/intune/apps/intune-management-extension)
     1. Deploy the code found in `c:\dev\iLAPs\Output\Install-iLaps_v2.0.ps1` using the guide linked above
+    2. Make sure you set Powershell64 or it will fail
 20. If using DEM feature complete this step. Otherwise ENJOY!
     1. Install and connect to storage account using storage explorer
     2. Fill out the `DEMPasswords - Import Template.csv` script and hash the password using the hashing script in the Output directory.

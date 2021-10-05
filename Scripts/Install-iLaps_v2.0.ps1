@@ -122,7 +122,8 @@ $AccessRule = $null;
 
 # Create Intune Management scripts folder
 try {
-    If (!(Test-Path $ScriptsFilePath)) {
+    $FullInstallPath = "$ScriptsFilePath\$Solution"
+    If (!(Test-Path $FullInstallPath)) {
         New-Item -ItemType Directory -Path $ScriptsFilePath\$Solution -Force | Out-Null;
         Write-Log -File $LogFile -Status Information -Text "'$ScriptsFilePath\$Solution' scripts folder created.";
     }
